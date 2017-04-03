@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "rootDir": ".",
+    "outDir": "build",
+    "target": "es5",
+    "sourceMap": true,
+    "skipDefaultLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators" : true,
+    "noImplicitAny": true,
+    "strictNullChecks": true
+  },
+  "include": [ "src/**/*.ts", "programs/**/*.ts", "scripts/**/*.ts" ]
+}

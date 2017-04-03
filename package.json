@@ -1,0 +1,54 @@
+{
+  "name": "witheve-starter",
+  "version": "0.1.0",
+  "description": "A starter framework for building integrated Eve projects.",
+  "keywords": [
+    "eve",
+    "language",
+    "web",
+    "framework",
+    "starter",
+    "relational",
+    "database",
+    "dataflow"
+  ],
+  "homepage": "http://witheve.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/witheve/eve-starter"
+  },
+  "bugs": {
+    "url": "https://github.com/witheve/eve-starter/issues"
+  },
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=7.4.0"
+  },
+  "scripts": {
+    "build": "./node_modules/witheve/scripts/build",
+    "start": "./node_modules/.bin/tsc && node ./bin/eve.js"
+  },
+  "dependencies": {
+    "@types/body-parser": "0.0.33",
+    "@types/commander": "^2.3.31",
+    "@types/express": "^4.0.33",
+    "@types/glob": "^5.0.30",
+    "@types/mkdirp": "^0.3.29",
+    "@types/node": "^6.0.41",
+    "@types/node-uuid": "0.0.28",
+    "@types/open": "0.0.29",
+    "@types/request": "0.0.31",
+    "@types/ws": "0.0.33",
+    "body-parser": "^1.15.2",
+    "commander": "^2.9.0",
+    "express": "^4.14.0",
+    "glob": "^7.1.1",
+    "mkdirp": "^0.5.1",
+    "node-uuid": "^1.4.7",
+    "open": "0.0.5",
+    "request": "^2.75.0",
+    "setimmediate": "^1.0.5",
+    "typescript": "^2.1.4",
+    "ws": "^1.1.1"
+  }
+}
