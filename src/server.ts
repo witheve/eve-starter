@@ -32,14 +32,13 @@ export class Server {
 
   reload() {
     this.app = express();
-
-    this.app.get("/assets/*", this.sendStatic([config.root + "/assets"]));
-    this.app.get("/build/*", this.sendStatic([config.root + "/build"]));
-    this.app.get("/src/*", this.sendStatic([config.root + "/src"]));
-    this.app.get("/node_modules/*", this.sendStatic([
-      config.root + "/node_modules",
-      config.root + "/node_modules/witheve/node_modules", // Unfortunate. :/
-    ]));
+    this.app.use("/assets", express.static(config.root + "/assets"));
+    this.app.use("/build", express.static(config.root + "/build"));
+    this.app.use("/src", express.static(config.root + "/src"));
+    this.app.use("/node_modules",
+      express.static(config.root + "/node_modules"),
+      express.static(config.root + "/node_modules/witheve/node_modules") // Unfortunate. :/
+    );
 
     this.app.get("/", this.serveIndex);
     this.app.get("/app/:workspaceId/:programId", this.serveApp);
@@ -55,6 +54,8 @@ export class Server {
     });
   }
 
+  // If the server is started with a file to run specified, serve that.
+  // Otherwise, serve the program switcher app.
   serveIndex:express.RequestHandler = (req, res, next) => {
     let bootstrap = "";
     if(config.file) {
@@ -67,6 +68,7 @@ export class Server {
     this.sendApp(bootstrap, res);
   }
 
+  // Serve the app specified in the URL if the server isn't running in file-mode.
   serveApp:express.RequestHandler = (req, res, next) => {
     if(config.file) res.status(401);
     let {workspaceId, programId} = req.params;
@@ -75,6 +77,18 @@ export class Server {
     this.sendApp(bootstrap, res);
   }
 
+  // Serve the specified program (path resolved via the specified workspace paths).
+  servePrograms:express.RequestHandler = (req, res, next) => {
+    let {workspaceId, programId} = req.params;
+    let workspacePath = config.workspacePaths[workspaceId];
+    if(!workspacePath) {
+      res.sendStatus(400);
+      return;
+    }
+    res.sendFile(workspacePath + "/" + programId, next);
+  }
+
+  // Serve a generated module that requires all the watchers in the library search path, so they'll be available for programs.
   serveWatchers:express.RequestHandler = (req, res, next) => {
     let watchers = witheve.findWatchers(config.watcherPaths);
     let content = "";
@@ -86,35 +100,7 @@ export class Server {
     res.send(content);
   }
 
-  servePrograms:express.RequestHandler = (req, res, next) => {
-    let {workspaceId, programId} = req.params;
-    let workspacePath = config.workspacePaths[workspaceId];
-    if(!workspacePath) {
-      res.sendStatus(400);
-      return;
-    }
-    this.sendStaticFile(programId, [workspacePath], res, next);
-  }
-
-  sendStatic(searchPaths:string[]) {
-    let handler:express.RequestHandler = (req, res, next) => {
-      this.sendStaticFile(req.params[0], searchPaths, res, next);
-    };
-    return handler;
-  }
-
-  sendStaticFile(file:string, searchPaths:string[], res:express.Response, next:express.NextFunction, curIx = 0) {
-    let current = searchPaths[curIx] + "/" + file;
-    res.sendFile(file, {root: searchPaths[curIx]}, (err) => {
-      if(err) {
-        if(curIx + 1 < searchPaths.length) {
-          this.sendStaticFile(file, searchPaths, res, next, curIx + 1);
-        } else next(err);
-
-      }
-    });
-  }
-
+  // Specialize the index file with the given bootstrapping code and send it.
   sendApp(bootstrap:string, res:express.Response) {
     bootstrap = `var __config = ${JSON.stringify(config)};\n${bootstrap}`;
     bootstrap.split("\n").join("\n      "); // Purely for aesthetics of the generated html.
