@@ -24,12 +24,16 @@
   "engines": {
     "node": ">=7.4.0"
   },
+  "bin": {
+    "eve": "./build/src/cli.js"
+  },
   "scripts": {
     "build": "./node_modules/typescript/bin/tsc",
     "postinstall": "./node_modules/typescript/bin/tsc",
     "start": "./build/cli.js"
   },
   "dependencies": {
+    "witheve": "git+ssh://git@github.com/witheve/eve.git#master",
     "@types/body-parser": "0.0.33",
     "@types/commander": "^2.3.31",
     "@types/express": "^4.0.33",
