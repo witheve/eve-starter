@@ -9,6 +9,15 @@ import config from "./config";
 
 interface ProcessError extends Error { errno?: string; }
 
+process.on('uncaughtException', (err:ProcessError) => {
+  if(err.errno === 'EADDRINUSE') {
+    console.log(`ERROR: Eve couldn't start because port ${config.port} is already in use.\n\nYou can select a different port for Eve using the "port" argument.\nFor example:\n\n> eve --port 1234`);
+  } else {
+    throw err;
+  }
+  process.exit(1);
+});
+
 export class Server {
   app:express.Express;
   rawServer:http.Server;
@@ -18,15 +27,6 @@ export class Server {
     // If the port is already in use, display an error message
     config.port = config.port || 8000;
     console.info(`Starting Eve server on port '${config.port}'...`);
-    process.on('uncaughtException', (err:ProcessError) => {
-      if(err.errno === 'EADDRINUSE') {
-        console.log(`ERROR: Eve couldn't start because port ${config.port} is already in use.\n\nYou can select a different port for Eve using the "port" argument.\nFor example:\n\n> eve --port 1234`);
-      } else {
-        throw err;
-      }
-      process.exit(1);
-    });
-
     this.reload();
   }
 
@@ -70,7 +70,10 @@ export class Server {
 
   // Serve the app specified in the URL if the server isn't running in file-mode.
   serveApp:express.RequestHandler = (req, res, next) => {
-    if(config.file) res.status(401);
+    if(config.file) {
+      res.status(401).send();
+      return;
+    }
     let {workspaceId, programId} = req.params;
     let file = workspaceId + "/" + programId;
     let bootstrap = `SystemJS.import("/programs/${file}");\n`;
@@ -123,5 +126,4 @@ export class Server {
     }
     return programFiles;
   }
-
 }
