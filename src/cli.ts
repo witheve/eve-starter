@@ -2,22 +2,10 @@ import * as glob from "glob";
 import * as fs from "fs";
 import * as path from "path";
 import * as program from "commander";
+import config from "./config";
 
-import {findWatchers, watcherPath as eveWatcherPath} from "witheve";
+import {findWatchers} from "witheve";
 import {Server} from "./server";
-
-let _posixifyRegExp = new RegExp("\\\\", "g");
-function posixify(path:string) {
-  return path.replace(_posixifyRegExp, "/");
-}
-
-// @NOTE: If you move this file in the hiararchy, you'll want to adjust this.
-let root = posixify(path.resolve(__dirname + "/../.."));
-// @NOTE: If you add more TS-compiled folders at the level of src, you'll want to adjust this.
-let srcPath = root + "/build/src";
-
-let workspacePaths:{[workspace:string]: string} = {eve: srcPath + "/programs"};
-let watcherPaths = [root + "build/watchers", posixify(path.join(root, "node_modules/witheve", eveWatcherPath))];
 
 //------------------------------------------------------------------------------
 // CLI Setup
@@ -45,8 +33,8 @@ function resolveFile(file:string) {
 }
 
 program
-  .option("-W, --workspace <name> <path>", "Search path(s) for programs", collectKV, workspacePaths)
-  .option("-L, --library-path <path>", "Search path(s) for watchers", collect, watcherPaths)
+  .option("-W, --workspace <name> <path>", "Search path(s) for programs", collectKV, config.workspacePaths)
+  .option("-L, --library-path <path>", "Search path(s) for watchers", collect, config.watcherPaths)
   .option("-a, --watch", "Watch the active program's file for changes and auto-reload")
   .option("-e, --execute <file>", "Execute a specific Eve program rather than the program browser", resolveFile)
 
@@ -60,40 +48,43 @@ program
   .option("-f, --list-found", "List all programs and watchers found within their search paths")
   .parse(process.argv);
 
-program["port"] = program["port"] || 8000;
-
-program["root"] = root;
-program["workspacePaths"] = workspacePaths;
+config.fromObject({
+  workspacePaths: program["workspace"],
+  watcherPaths: program["libraryPath"],
+  watch: program["watch"],
+  port: program["port"],
+  open: program["open"]
+});
 
 if(program["execute"]) {
   let file = program["execute"];
-  workspacePaths["file"] = path.dirname(file);
-  program["file"] = "file/" + path.basename(file);
+  config.setWorkspace("file", path.dirname(file));
+  config.file = "file/" + path.basename(file);
 }
 
 export function findPrograms(workspacePath:string) {
   let programFiles:string[] = [];
-  // @NOTE: We normalize backslash to forward slash to make glob happy.
-  for(let filepath of glob.sync(posixify(workspacePath) + "/*.js")) {
-    if(filepath === __filename) continue;
+  for(let filepath of glob.sync(workspacePath + "/*.js")) {
     programFiles.push(filepath);
   }
   return programFiles;
 }
 
+console.info("For a complete list of Eve's configuration options, run `eve --help`");
+
 if(program["listFound"]) {
   console.info("Found programs:");
-  for(let workspaceId in workspacePaths) {
-    let workspacePath = workspacePaths[workspaceId];
+  for(let workspaceId in config.workspacePaths) {
+    let workspacePath = config.workspacePaths[workspaceId];
     let programs = findPrograms(workspacePath);
     console.info(`  ${workspaceId} (${workspacePath}):`);
     console.info("    " + programs.map((p) => path.relative(workspacePath, p)).join("\n    "));
     console.info();
   }
 
-  let watchers = findWatchers(watcherPaths);
+  let watchers = findWatchers(config.watcherPaths);
   console.info("Found watchers:");
-  console.info("  " + watchers.map((p) => path.relative(root, p)).join("\n  "));
+  console.info("  " + watchers.map((p) => path.relative(config.root, p)).join("\n  "));
   process.exit(0);
 }
 
@@ -105,23 +96,9 @@ if(program["headless"]) {
   }
 
   console.info(`Starting headless Eve instance`);
-  console.info("For a complete list of Eve's configuration options, run `eve --help`");
   require(program["execute"]);
 
 } else {
-  console.info(`Starting Eve server on port '${program["port"]}'...`);
-  console.info("For a complete list of Eve's configuration options, run `eve --help`");
-
-  let opts = {
-    root,
-    workspacePaths,
-    watcherPaths,
-    watch: program["watch"],
-    file: program["file"],
-    port: program["port"],
-    open: program["open"]
-  };
-
-  let server = new Server(opts);
+  let server = new Server();
   server.start();
 }
