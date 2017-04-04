@@ -33,18 +33,19 @@ export class Server {
   reload() {
     this.app = express();
 
-    this.app.get("/", this.serveIndex);
-    this.app.get("/assets/*", this.serveStatic([config.root + "/assets"]));
-    this.app.get("/build/*", this.serveStatic([config.root + "/build"]));
-    this.app.get("/src/*", this.serveStatic([config.root + "/src"]));
-    this.app.get("/node_modules/*", this.serveStatic([
+    this.app.get("/assets/*", this.sendStatic([config.root + "/assets"]));
+    this.app.get("/build/*", this.sendStatic([config.root + "/build"]));
+    this.app.get("/src/*", this.sendStatic([config.root + "/src"]));
+    this.app.get("/node_modules/*", this.sendStatic([
       config.root + "/node_modules",
       config.root + "/node_modules/witheve/node_modules", // Unfortunate. :/
     ]));
 
-    this.app.get("/watchers.js", this.serveWatchers);
+    this.app.get("/", this.serveIndex);
+    this.app.get("/app/:workspaceId/:programId", this.serveApp);
     this.app.get("/programs/:workspaceId/:programId", this.servePrograms);
-    this.app.get("/select-program/:workspaceId/:programId", this.selectProgram);
+
+    this.app.get("/watchers.js", this.serveWatchers);
 
     if(this.rawServer) this.rawServer.close();
     this.rawServer = http.createServer(this.app);
@@ -55,20 +56,23 @@ export class Server {
   }
 
   serveIndex:express.RequestHandler = (req, res, next) => {
-    fs.readFile("index.html", (err, data) => {
-      let content = data.toString();
-      let bootstrap = `var __config = ${JSON.stringify(config)};\n`;
-      if(config.file) {
-        bootstrap += `SystemJS.import("./programs/${config.file}");\n`;
-      } else {
-        let programs = this.findPrograms();
-        bootstrap += `__config.programs = ${JSON.stringify(programs)};\n`;
-        bootstrap += `SystemJS.import("./programs/root/program-switcher.js");\n`
-      }
-      bootstrap.split("\n").join("\n      "); // Purely for aesthetics of the generated html.
-      content = content.replace("<!-- BOOTSTRAP -->", bootstrap);
-      res.status(200).send(content);
-    });
+    let bootstrap = "";
+    if(config.file) {
+      bootstrap += `SystemJS.import("/programs/${config.file}");\n`;
+    } else {
+      let programs = this.findPrograms();
+      bootstrap += `__config.programs = ${JSON.stringify(programs)};\n`;
+      bootstrap += `SystemJS.import("/programs/root/program-switcher.js");\n`
+    }
+    this.sendApp(bootstrap, res);
+  }
+
+  serveApp:express.RequestHandler = (req, res, next) => {
+    if(config.file) res.status(401);
+    let {workspaceId, programId} = req.params;
+    let file = workspaceId + "/" + programId;
+    let bootstrap = `SystemJS.import("/programs/${file}");\n`;
+    this.sendApp(bootstrap, res);
   }
 
   serveWatchers:express.RequestHandler = (req, res, next) => {
@@ -89,31 +93,35 @@ export class Server {
       res.sendStatus(400);
       return;
     }
-    this.serveStaticFile(programId, [workspacePath], res, next);
+    this.sendStaticFile(programId, [workspacePath], res, next);
   }
 
-  selectProgram:express.RequestHandler = (req, res, next) => {
-    let {workspaceId, programId} = req.params;
-    config.file = workspaceId + "/" + programId;
-    res.sendStatus(200);
-  }
-
-  serveStatic(searchPaths:string[]) {
+  sendStatic(searchPaths:string[]) {
     let handler:express.RequestHandler = (req, res, next) => {
-      this.serveStaticFile(req.params[0], searchPaths, res, next);
+      this.sendStaticFile(req.params[0], searchPaths, res, next);
     };
     return handler;
   }
 
-  serveStaticFile(file:string, searchPaths:string[], res:express.Response, next:express.NextFunction, curIx = 0) {
+  sendStaticFile(file:string, searchPaths:string[], res:express.Response, next:express.NextFunction, curIx = 0) {
     let current = searchPaths[curIx] + "/" + file;
     res.sendFile(file, {root: searchPaths[curIx]}, (err) => {
       if(err) {
         if(curIx + 1 < searchPaths.length) {
-          this.serveStaticFile(file, searchPaths, res, next, curIx + 1);
+          this.sendStaticFile(file, searchPaths, res, next, curIx + 1);
         } else next(err);
 
       }
+    });
+  }
+
+  sendApp(bootstrap:string, res:express.Response) {
+    bootstrap = `var __config = ${JSON.stringify(config)};\n${bootstrap}`;
+    bootstrap.split("\n").join("\n      "); // Purely for aesthetics of the generated html.
+    fs.readFile("index.html", (err, data) => {
+      let content = data.toString();
+      content = content.replace("<!-- BOOTSTRAP -->", bootstrap);
+      res.status(200).send(content);
     });
   }
 

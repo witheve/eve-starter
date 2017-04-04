@@ -15,7 +15,6 @@ prog
   .commit("Clicking a program button changes the active program.", ({find, record}) => {
     let program_button = find("program-button");
     find("html/event/click", {element: program_button});
-    //find("html/event/click");
     return [
       record("active-program", {program: program_button.program})
     ];
@@ -28,10 +27,7 @@ prog
   })
   .asDiffs((diffs) => {
     for(let [_, __, url] of diffs.adds) {
-      let req = new XMLHttpRequest();
-      req.open("GET", "/select-program/" + url, false);
-      req.send();
-      location.reload(true);
+      location.pathname = "/app/" + url;
     }
   })
 
