@@ -4,8 +4,8 @@ import * as express from "express";
 import * as http from "http";
 import * as glob from "glob";
 import open = require("open");
-import * as witheve from "witheve";
 import config from "./config";
+import {findWatchers} from "./util";
 
 interface ProcessError extends Error { errno?: string; }
 
@@ -61,7 +61,7 @@ export class Server {
     if(config.file) {
       bootstrap += `SystemJS.import("/programs/${config.file}");\n`;
     } else {
-      let programs = this.findPrograms();
+      let programs = this.getProgramUrls();
       bootstrap += `__config.programs = ${JSON.stringify(programs)};\n`;
       bootstrap += `SystemJS.import("/programs/root/program-switcher.js");\n`
     }
@@ -93,7 +93,7 @@ export class Server {
 
   // Serve a generated module that requires all the watchers in the include path, so they'll be available for programs.
   serveWatchers:express.RequestHandler = (req, res, next) => {
-    let watchers = witheve.findWatchers(config.watcherPaths);
+    let watchers = findWatchers(config.watcherPaths);
     let content = "";
     for(let filepath of watchers) {
       let reqPath = path.relative(config.root, filepath);
@@ -114,7 +114,7 @@ export class Server {
     });
   }
 
-  findPrograms() {
+  getProgramUrls() {
     // @FIXME: We really need to cache this.
     let programFiles:string[] = [];
     let workspacePaths = config.workspacePaths;

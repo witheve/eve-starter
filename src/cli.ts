@@ -4,16 +4,10 @@ import * as path from "path";
 import * as program from "commander";
 import config from "./config";
 
-import {findWatchers} from "witheve";
+import {findWatchers, findPrograms} from "./util";
 import {Server} from "./server";
 
-function findPrograms(workspacePath:string) {
-  let programFiles:string[] = [];
-  for(let filepath of glob.sync(workspacePath + "/*.js")) {
-    programFiles.push(filepath);
-  }
-  return programFiles;
-}
+
 
 //------------------------------------------------------------------------------
 // CLI Setup
@@ -100,7 +94,14 @@ if(opts["headless"]) {
     process.exit(1);
   }
 
-  console.info(`Starting headless Eve instance`);
+  console.info(`Starting headless Eve instance...`);
+  console.info("  Requiring watchers from include paths...");
+
+  for(let watcherFile of findWatchers(config.watcherPaths)) {
+    require(watcherFile);
+  }
+
+  console.info("  Starting program...");
 
   require(config.file!.replace("file", config.workspacePaths["file"]));
 
