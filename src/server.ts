@@ -33,11 +33,15 @@ export class Server {
     this.app = express();
 
     this.app.get("/", this.serveIndex);
+    this.app.get("/assets/*", this.serveStatic([config.root + "/assets"]));
+    this.app.get("/build/*", this.serveStatic([config.root + "/build"]));
+    this.app.get("/src/*", this.serveStatic([config.root + "/src"]));
+    this.app.get("/node_modules/*", this.serveStatic([
+      config.root + "/node_modules",
+      config.root + "/node_modules/witheve/node_modules", // Unfortunate. :/
+    ]));
+
     this.app.get("/bootstrap.js", this.serveBootstrap);
-    this.app.get("/assets/*", this.serveAssets);
-    this.app.get("/build/*", this.serveSource);
-    this.app.get("/src/*", this.serveSource);
-    this.app.get("/node_modules/*", this.serveNodeModules);
     this.app.get("/watchers.js", this.serveWatchers);
     this.app.get("/programs/:workspaceId/:programId", this.servePrograms);
     this.app.get("/select-program/:workspaceId/:programId", this.selectProgram);
@@ -53,28 +57,7 @@ export class Server {
   serveIndex:express.RequestHandler = (req, res, next) => {
     res.sendFile("index.html", {root: config.root}, (err) => {
       if(err) next(err);
-      else console.log("Served:", "index.html");
     });
-  }
-
-  serveAssets:express.RequestHandler = (req, res, next) => {
-    this.serveStaticFile(req.params[0], [config.root + "/assets"], res, next);
-  }
-
-  serveSource:express.RequestHandler = (req, res, next) => {
-    let searchPaths = [
-      config.root + "/build",
-      config.root + "/src",
-    ];
-    this.serveStaticFile(req.params[0], searchPaths, res, next);
-  }
-
-  serveNodeModules:express.RequestHandler = (req, res, next) => {
-    let searchPaths = [
-      config.root + "/node_modules",
-      config.root + "/node_modules/witheve/node_modules", // Unfortunate. :/
-    ];
-    this.serveStaticFile(req.params[0], searchPaths, res, next);
   }
 
   serveWatchers:express.RequestHandler = (req, res, next) => {
@@ -101,7 +84,6 @@ export class Server {
   selectProgram:express.RequestHandler = (req, res, next) => {
     let {workspaceId, programId} = req.params;
     config.file = workspaceId + "/" + programId;
-    console.log(workspaceId, programId);
     res.sendStatus(200);
   }
 
@@ -116,7 +98,6 @@ export class Server {
       // @FIXME: We don't want to be calling glob synchronously in this path.
       let programFiles:string[] = [];
       let workspacePaths = config.workspacePaths;
-      console.log(workspacePaths);
       for(let workspaceId in workspacePaths) {
         let workspacePath = workspacePaths[workspaceId];
         for(let filepath of glob.sync(workspacePath + "/*.js")) {
@@ -131,6 +112,13 @@ export class Server {
     }
   }
 
+  serveStatic(searchPaths:string[]) {
+    let handler:express.RequestHandler = (req, res, next) => {
+      this.serveStaticFile(req.params[0], searchPaths, res, next);
+    };
+    return handler;
+  }
+
   serveStaticFile(file:string, searchPaths:string[], res:express.Response, next:express.NextFunction, curIx = 0) {
     let current = searchPaths[curIx] + "/" + file;
     res.sendFile(file, {root: searchPaths[curIx]}, (err) => {
@@ -139,13 +127,7 @@ export class Server {
           this.serveStaticFile(file, searchPaths, res, next, curIx + 1);
         } else next(err);
 
-      } else {
-        console.log(`Served: '${file}' from '${searchPaths[curIx]}'`);
       }
     });
-  }
-
-  computeDeps(file:string) {
-
   }
 }
