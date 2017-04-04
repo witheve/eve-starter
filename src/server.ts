@@ -91,7 +91,7 @@ export class Server {
     res.sendFile(workspacePath + "/" + programId, next);
   }
 
-  // Serve a generated module that requires all the watchers in the library search path, so they'll be available for programs.
+  // Serve a generated module that requires all the watchers in the include path, so they'll be available for programs.
   serveWatchers:express.RequestHandler = (req, res, next) => {
     let watchers = witheve.findWatchers(config.watcherPaths);
     let content = "";

@@ -7,6 +7,14 @@ import config from "./config";
 import {findWatchers} from "witheve";
 import {Server} from "./server";
 
+function findPrograms(workspacePath:string) {
+  let programFiles:string[] = [];
+  for(let filepath of glob.sync(workspacePath + "/*.js")) {
+    programFiles.push(filepath);
+  }
+  return programFiles;
+}
+
 //------------------------------------------------------------------------------
 // CLI Setup
 //------------------------------------------------------------------------------
@@ -19,9 +27,8 @@ function collect(val:string, memo:string[]) {
 function collectKV(raw:string, memo:{[workspace:string]: string}) {
   let cleaned = raw.replace(/,/g, " ").replace(/\s+/, " ");
   let kvs = cleaned.split(" ");
-  for(let i = 0; i < kvs.length; i += 2) {
-    let key = kvs[i];
-    let value = kvs[i + 1];
+  for(let i = 0; i < kvs.length; i += 1) {
+    let [key, value] = kvs[i].split(":");
     if(!value) throw new Error("Must specify a path for every workspace.");
     memo[key] = value;
   }
@@ -33,10 +40,10 @@ function resolveFile(file:string) {
 }
 
 program
-  .option("-W, --workspace <name> <path>", "Search path(s) for programs", collectKV, config.workspacePaths)
-  .option("-L, --library-path <path>", "Search path(s) for watchers", collect, config.watcherPaths)
+  .usage("[opts] [file]")
+  .option("-W, --workspace <name>:<path>", "Search path(s) for programs", collectKV, config.workspacePaths)
+  .option("-I, --include <path>", "Search path(s) for watchers", collect, config.watcherPaths)
   .option("-a, --watch", "Watch the active program's file for changes and auto-reload")
-  .option("-e, --execute <file>", "Execute a specific Eve program rather than the program browser", resolveFile)
 
    // Node Eval
   .option("-H, --headless", "Run the specified program in node instead of the browser. Requires -e")
@@ -48,31 +55,29 @@ program
   .option("-f, --list-found", "List all programs and watchers found within their search paths")
   .parse(process.argv);
 
+let opts = program.opts();
 config.fromObject({
-  workspacePaths: program["workspace"],
-  watcherPaths: program["libraryPath"],
-  watch: program["watch"],
-  port: program["port"],
-  open: program["open"]
+  workspacePaths: opts["workspace"],
+  watcherPaths: opts["include"],
+  watch: opts["watch"],
+  port: opts["port"],
+  open: opts["open"]
 });
 
-if(program["execute"]) {
-  let file = program["execute"];
+if(program.args.length) {
+  if(program.args.length > 1) {
+    console.error("Refusing to start multiple programs at once. Consider composing them instead.");
+    program.outputHelp();
+    process.exit(2);
+  }
+  let file = path.resolve(program.args[0]);
   config.setWorkspace("file", path.dirname(file));
   config.file = "file/" + path.basename(file);
 }
 
-export function findPrograms(workspacePath:string) {
-  let programFiles:string[] = [];
-  for(let filepath of glob.sync(workspacePath + "/*.js")) {
-    programFiles.push(filepath);
-  }
-  return programFiles;
-}
-
 console.info("For a complete list of Eve's configuration options, run `eve --help`");
 
-if(program["listFound"]) {
+if(opts["listFound"]) {
   console.info("Found programs:");
   for(let workspaceId in config.workspacePaths) {
     let workspacePath = config.workspacePaths[workspaceId];
@@ -88,15 +93,16 @@ if(program["listFound"]) {
   process.exit(0);
 }
 
-if(program["headless"]) {
-  if(!program["execute"]) {
+if(opts["headless"]) {
+  if(!config.file) {
     program.outputHelp();
     console.error("\nERROR: Unable to run Eve headless unless you specify a program to run with `-e <file>`");
     process.exit(1);
   }
 
   console.info(`Starting headless Eve instance`);
-  require(program["execute"]);
+
+  require(config.file!.replace("file", config.workspacePaths["file"]));
 
 } else {
   let server = new Server();
