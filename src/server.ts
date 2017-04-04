@@ -1,4 +1,5 @@
 import * as path from "path";
+import * as fs from "fs";
 import * as express from "express";
 import * as http from "http";
 import * as glob from "glob";
@@ -41,7 +42,6 @@ export class Server {
       config.root + "/node_modules/witheve/node_modules", // Unfortunate. :/
     ]));
 
-    this.app.get("/bootstrap.js", this.serveBootstrap);
     this.app.get("/watchers.js", this.serveWatchers);
     this.app.get("/programs/:workspaceId/:programId", this.servePrograms);
     this.app.get("/select-program/:workspaceId/:programId", this.selectProgram);
@@ -55,8 +55,19 @@ export class Server {
   }
 
   serveIndex:express.RequestHandler = (req, res, next) => {
-    res.sendFile("index.html", {root: config.root}, (err) => {
-      if(err) next(err);
+    fs.readFile("index.html", (err, data) => {
+      let content = data.toString();
+      let bootstrap = `var __config = ${JSON.stringify(config)};\n`;
+      if(config.file) {
+        bootstrap += `SystemJS.import("./programs/${config.file}");\n`;
+      } else {
+        let programs = this.findPrograms();
+        bootstrap += `__config.programs = ${JSON.stringify(programs)};\n`;
+        bootstrap += `SystemJS.import("./programs/root/program-switcher.js");\n`
+      }
+      bootstrap.split("\n").join("\n      "); // Purely for aesthetics of the generated html.
+      content = content.replace("<!-- BOOTSTRAP -->", bootstrap);
+      res.status(200).send(content);
     });
   }
 
@@ -87,31 +98,6 @@ export class Server {
     res.sendStatus(200);
   }
 
-  // Construct an appropriate bootstrap for the given request.
-  serveBootstrap:express.RequestHandler = (req, res, next) => {
-    if(config.file) {
-      res.send(`
-        var __config = ${JSON.stringify(config)};
-        SystemJS.import("../programs/${config.file}");
-      `);
-    } else {
-      // @FIXME: We don't want to be calling glob synchronously in this path.
-      let programFiles:string[] = [];
-      let workspacePaths = config.workspacePaths;
-      for(let workspaceId in workspacePaths) {
-        let workspacePath = workspacePaths[workspaceId];
-        for(let filepath of glob.sync(workspacePath + "/*.js")) {
-          programFiles.push(workspaceId + "/" + path.relative(workspacePath, filepath));
-        }
-      }
-      res.send(`
-        var __config = ${JSON.stringify(config)};
-        __config.programs = ${JSON.stringify(programFiles)};
-        SystemJS.import("./programs/root/program-switcher.js");
-      `);
-    }
-  }
-
   serveStatic(searchPaths:string[]) {
     let handler:express.RequestHandler = (req, res, next) => {
       this.serveStaticFile(req.params[0], searchPaths, res, next);
@@ -130,4 +116,18 @@ export class Server {
       }
     });
   }
+
+  findPrograms() {
+    // @FIXME: We really need to cache this.
+    let programFiles:string[] = [];
+    let workspacePaths = config.workspacePaths;
+    for(let workspaceId in workspacePaths) {
+      let workspacePath = workspacePaths[workspaceId];
+      for(let filepath of glob.sync(workspacePath + "/*.js")) {
+        programFiles.push(workspaceId + "/" + path.relative(workspacePath, filepath));
+      }
+    }
+    return programFiles;
+  }
+
 }
