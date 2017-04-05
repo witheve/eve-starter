@@ -32,7 +32,10 @@ export class Server {
 
   reload() {
     this.app = express();
-    this.app.use("/assets", express.static(config.root + "/assets"));
+    this.app.use("/assets",
+      express.static(config.root + "/assets"),
+      express.static(config.root + "/node_modules/witheve/assets")
+    );
     this.app.use("/build", express.static(config.root + "/build"));
     this.app.use("/src", express.static(config.root + "/src"));
     this.app.use("/node_modules",
