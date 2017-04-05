@@ -1,7 +1,7 @@
 import {Program} from "witheve";
 
 let prog = new Program("test");
-prog.attach("editor2");
+prog.attach("editor");
 
 prog.commit("Add some data to play with.", ({find, record}) => {
   find("turtle");
