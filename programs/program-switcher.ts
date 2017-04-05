@@ -10,7 +10,8 @@ prog
       record("html/element", {tagname: "style", text: `
         body { justify-content: center; }
         .container {flex: 0 0 auto; align-self: center; align-items: flex-start; padding: 20; background: white; border-radius: 3px; box-shadow: 0 3px 4px rgba(0, 0, 0, 0.1); }
-        .program-button {color: rgb(65, 161, 221); text-decoration: underline; cursor: pointer; }
+        .program-button {color: rgb(65, 161, 221); cursor: pointer; }
+        .program-button:hover {color: rgb(78, 193, 255); text-decoration: underline; }
       `})
     ];
   })
