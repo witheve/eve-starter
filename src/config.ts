@@ -1,18 +1,7 @@
 import * as path from "path";
 import * as eve from "witheve";
 
-let _posixifyRegExp = new RegExp("\\\\", "g");
-export function posixify(path:string) {
-  return path.replace(_posixifyRegExp, "/");
-}
-
-function copy<T extends {}>(obj:T):T {
-  let neue:T = {} as T;
-  for(let key in obj) {
-    neue[key] = obj[key];
-  }
-  return neue;
-}
+import {posixify, copy} from "./util";
 
 // @NOTE: If you move this file in the hiararchy, you'll want to adjust this.
 let root = posixify(path.resolve(__dirname + "/../.."));
