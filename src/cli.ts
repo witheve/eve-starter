@@ -42,7 +42,7 @@ program
   //.option("-a, --watch", "Watch the active program's file for changes and auto-reload") // @TODO: This.
 
    // Node Eval
-  .option("-H, --headless", "Run the specified program in node instead of the browser. Requires -e")
+  .option("-H, --headless", "Run the specified program in node instead of the browser. Requires a specified file.")
 
   // Browser Eval
   .option("-p, --port <number>", "Run the Eve server on an alternate port. Default <8000>")
@@ -92,7 +92,7 @@ if(opts["listFound"]) {
 if(opts["headless"]) {
   if(!config.file) {
     program.outputHelp();
-    console.error("\nERROR: Unable to run Eve headless unless you specify a program to run with `-e <file>`");
+    console.error("\nERROR: Unable to run Eve headless unless you specify a program to run with `<file>`");
     process.exit(1);
   }
 
