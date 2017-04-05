@@ -6,9 +6,7 @@ prog.attach("ui");
 prog
   .block("Draw a container for the program links.", ({record}) => {
     return [
-      record("container", "ui/column").add("children", [
-        record("ui/text", {sort: 0, text: "Select a program", style: record({padding: "5px 10px"})})
-      ]),
+      record("container", "ui/column"),
       record("html/element", {tagname: "style", text: `
         body { justify-content: center; }
         .container {flex: 0 0 auto; align-self: center; align-items: flex-start; padding: 20; background: white; border-radius: 3px; box-shadow: 0 3px 4px rgba(0, 0, 0, 0.1); }
@@ -21,6 +19,7 @@ prog
     let program = find("program");
     return [
       container.add("children", [
+        record("ui/text", {sort: 0, text: "Select a program", style: record({padding: "5px 10px"})}),
         record("program-button", "ui/button", {sort: program.url, program, text: program.url})
       ])
     ];
@@ -30,11 +29,10 @@ prog
     not(() => find("program"));
     return [
       container.add("children", [
-        record("ui/text", {text: "I wasn't able to find any programs in the specified workspace(s). :("})
+        record("ui/text", {text: "I wasn't able to find any programs... :("})
       ])
     ];
   });
-
 prog
   .commit("Clicking a program button changes the active program.", ({find, record}) => {
     let program_button = find("program-button");
@@ -61,6 +59,10 @@ let programs:string[] = config && config.programs || [];
 let programEAVs:RawEAV[] = [];
 for(let program of programs) {
   appendAsEAVs(programEAVs, {tag: "program", url: program})
+}
+
+if(!programEAVs.length) {
+  programEAVs.push(["dummy", "tag", "dummy"]);
 }
 prog.inputEavs(programEAVs)
 
