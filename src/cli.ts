@@ -39,7 +39,7 @@ program
   .usage("[opts] [file]")
   .option("-W, --workspace <name>:<path>", "Search path(s) for programs", collectKV, config.workspacePaths)
   .option("-I, --include <path>", "Search path(s) for watchers", collect, config.watcherPaths)
-  .option("-a, --watch", "Watch the active program's file for changes and auto-reload")
+  //.option("-a, --watch", "Watch the active program's file for changes and auto-reload") // @TODO: This.
 
    // Node Eval
   .option("-H, --headless", "Run the specified program in node instead of the browser. Requires -e")
