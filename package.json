@@ -33,7 +33,7 @@
     "start": "node ./build/src/cli.js"
   },
   "dependencies": {
-    "witheve": "git+ssh://git@github.com/witheve/eve.git#master",
+    "witheve": "git+ssh://git@github.com/witheve/eve.git#refactor-runtime",
     "@types/body-parser": "0.0.33",
     "@types/commander": "^2.3.31",
     "@types/express": "^4.0.33",
