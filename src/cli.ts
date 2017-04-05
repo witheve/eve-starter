@@ -42,7 +42,7 @@ program
   //.option("-a, --watch", "Watch the active program's file for changes and auto-reload") // @TODO: This.
 
    // Node Eval
-  .option("-H, --headless", "Run the specified program in node instead of the browser. Requires a specified file.")
+  .option("-H, --headless", "Run the specified program in node instead of the browser. Requires a specified file")
 
   // Browser Eval
   .option("-p, --port <number>", "Run the Eve server on an alternate port. Default <8000>")
