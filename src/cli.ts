@@ -6,7 +6,7 @@ import * as path from "path";
 import * as program from "commander";
 import config from "./config";
 
-import {findWatchers, findPrograms} from "./util";
+import {findWatchers, findPrograms, posixify} from "./util";
 import {Server} from "./server";
 
 
@@ -85,7 +85,7 @@ if(opts["listFound"]) {
 
   let watchers = findWatchers(config.watcherPaths);
   console.info("Found watchers:");
-  console.info("  " + watchers.map((p) => path.relative(config.root, p)).join("\n  "));
+  console.info("  " + watchers.map((p) => posixify(path.relative(config.root, p))).join("\n  "));
   process.exit(0);
 }
 

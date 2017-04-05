@@ -5,7 +5,7 @@ import * as http from "http";
 import * as glob from "glob";
 import open = require("open");
 import config from "./config";
-import {findWatchers} from "./util";
+import {findWatchers, posixify} from "./util";
 
 interface ProcessError extends Error { errno?: string; }
 
@@ -96,7 +96,7 @@ export class Server {
     let watchers = findWatchers(config.watcherPaths);
     let content = "";
     for(let filepath of watchers) {
-      let reqPath = path.relative(config.root, filepath);
+      let reqPath = posixify(path.relative(config.root, filepath));
       if(reqPath.indexOf("node_modules/") === 0) reqPath = reqPath.slice("node_modules/".length);
       content += `require("${reqPath}");\n`;
     }
