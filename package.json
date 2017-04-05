@@ -28,9 +28,9 @@
     "eve": "./build/src/cli.js"
   },
   "scripts": {
-    "build": "./node_modules/typescript/bin/tsc",
-    "postinstall": "./node_modules/typescript/bin/tsc",
-    "start": "node ./build/src/cli.js"
+    "build": "tsc",
+    "postinstall": "tsc",
+    "start": "node build/src/cli.js"
   },
   "dependencies": {
     "witheve": "preview",
