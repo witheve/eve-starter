@@ -36,8 +36,7 @@ prog.attach("canvas");
 prog.block("Draw a simple square.", ({find, record}) => {
   let example = "Square";
   return [
-    record("html/element", {tagname: "div", class: "container", example}).add("children", [
-      record("html/element", {sort: 0, tagname: "div", text: example}),
+    record("container", {example}).add("children", [
       record("canvas/root", {sort: 1, width: 160, height: 140, example}).add("children", [
         record("canvas/path", {sort: 1, fillStyle: "rgb(0, 158, 224"}).add("children", [
           record({sort: 1, type: "rect", x: 30, y: 20, width: 100, height: 100})
@@ -50,8 +49,7 @@ prog.block("Draw a simple square.", ({find, record}) => {
 prog.block("Draw a compound path.", ({find, record}) => {
   let example = "Compound path";
   return [
-    record("html/element", {tagname: "div", class: "container", example}).add("children", [
-      record("html/element", {sort: 0, tagname: "div", text: example}),
+    record("container", {example}).add("children", [
       record("canvas/root", {sort: 1, width: 160, height: 140, example}).add("children", [
         record("canvas/path", {sort: 1, strokeStyle: "rgb(91, 89, 164)", lineWidth: 2, lineCap: "square", lineJoin: "bevel"}).add("children", [
           record({sort: 1, type: "rect", x: 50, y: 30, width: 50, height: 75}),
@@ -66,8 +64,7 @@ prog.block("Draw a compound path.", ({find, record}) => {
 prog.block("Draw a canvas with multiple paths.", ({find, record}) => {
   let example = "Multiple paths";
   return [
-    record("html/element", {tagname: "div", class: "container", example}).add("children", [
-      record("html/element", {sort: 0, tagname: "div", text: example}),
+    record("container", {example}).add("children", [
       record("canvas/root", {sort: 1, width: 160, height: 140, example}).add("children", [
         record("canvas/path", {sort: 1, fillStyle: "rgb(0, 184, 241)"}).add("children", [
           record({sort: 1, type: "rect", x: 40, y: 25, width: 50, height: 100})
@@ -101,8 +98,7 @@ prog.block("Reusable equilateral triangle path block.", ({find, lib:{math}, reco
 prog.block("Draw a canvas with a reusable path component.", ({find, record}) => {
   let example = "Reusable path component";
   return [
-    record("html/element", {tagname: "div", class: "container", example}).add("children", [
-      record("html/element", {sort: 0, tagname: "div", text: example}),
+    record("container", {example}).add("children", [
       record("canvas/root", {sort: 1, width: 160, height: 140, example}).add("children", [
         record("triangle", {sort: 1, x: 80, y: 10, side: 100, fillStyle: "rgb(74, 64, 136)"}),
         record("triangle", {sort: 2, x: 80, y: 32, side: 60, fillStyle: "rgb(91, 89, 164)"}),
@@ -143,8 +139,7 @@ prog.block("Draw an animated pulsing ball.", ({find, lib:{math}, choose, record}
   );
   let radius = 20 + size / 50 * 30;
   return [
-    record("html/element", "html/listener/hover", {tagname: "div", class: "container", example, animated}).add("children", [
-      record("html/element", {sort: 0, tagname: "div", text: example}),
+    record("container", "html/listener/hover", {example, animated}).add("children", [
       record("canvas/root", {sort: 1, width: 160, height: 140, example, animated}).add("children", [
         record("canvas/path", {sort: 1, fillStyle: "rgb(0, 184, 241)", example, animated}).add("children", [
           record({sort: 1, type: "ellipse", x: 80, y: 70, radiusX: radius, radiusY: radius, rotation: 0, startAngle: 0, endAngle: 2 * 3.14, anticlockwise: "false"})
@@ -153,6 +148,15 @@ prog.block("Draw an animated pulsing ball.", ({find, lib:{math}, choose, record}
     ])
   ];
 });
+
+prog.block("An example container is a div with a title.", ({find, record}) => {
+  let container = find("container");
+  return [
+    container.add({tag: "html/element", tagname: "div", class: "container"}).add("children", [
+      record("html/element", {sort: 0, tagname: "div", text: container.example})
+    ])
+  ];
+})
 
 
 prog.block("Add some CSS to spruce the place up.", ({record}) => {
