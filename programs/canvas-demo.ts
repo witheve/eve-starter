@@ -1,6 +1,7 @@
-import {Program} from "witheve";
+import {Program, appendAsEAVs} from "witheve";
 
 let prog = new Program("test");
+prog.attach("system"); // For the timer
 prog.attach("canvas");
 
 /*
@@ -114,6 +115,46 @@ prog.block("Draw a canvas with a reusable path component.", ({find, record}) => 
   ];
 });
 
+prog.commit("Create a record to keep track of where we're at in our animation.", ({record}) => {
+  return [
+    record("animated-circle", {frame: 0, prev: 0})
+  ]
+});
+
+prog.commit("When a container for an animated circle is hovered, allow its frame to update with the timer.", ({find}) => {
+  let timer = find("animation-timer");
+  let animated = find("animated-circle");
+  // A container for this animated circle is hovered.
+  find("html/element", "html/hovered", {class: "container", animated});
+  animated.frame != timer.frame;
+  return [
+    animated.remove("frame").add("frame", timer.frame)
+  ];
+})
+
+prog.block("Draw an animated pulsing ball.", ({find, lib:{math}, choose, record}) => {
+  let example = "Animated (hover me!)";
+  //let timer = find("animation-timer");
+  let animated = find("animated-circle");
+  let step = math.mod(animated.frame, 100);
+  let [size] = choose(
+    () => { step <= 50; return step; },
+    () => 100 - step
+  );
+  let radius = 20 + size / 50 * 30;
+  return [
+    record("html/element", "html/listener/hover", {tagname: "div", class: "container", example, animated}).add("children", [
+      record("html/element", {sort: 0, tagname: "div", text: example}),
+      record("canvas/root", {sort: 1, width: 160, height: 140, example, animated}).add("children", [
+        record("canvas/path", {sort: 1, fillStyle: "rgb(0, 184, 241)", example, animated}).add("children", [
+          record({sort: 1, type: "ellipse", x: 80, y: 70, radiusX: radius, radiusY: radius, rotation: 0, startAngle: 0, endAngle: 2 * 3.14, anticlockwise: "false"})
+        ]),
+      ])
+    ])
+  ];
+});
+
+
 prog.block("Add some CSS to spruce the place up.", ({record}) => {
   return [
     record("html/element", {tagname: "style", text: `
@@ -124,7 +165,8 @@ prog.block("Add some CSS to spruce the place up.", ({record}) => {
   ];
 })
 
-// Due to a minor implementation issue, input needs to be triggered at least once for the program to execute.
-prog.inputEavs([
-  ["dummy", "tag", "turtle"]
-]);
+// Add a timer for the animation example.
+// @NOTE: Make sure to input something here.
+//        Due to a minor implementation issue, input needs to be triggered at least once for the program to execute.
+let inputs = appendAsEAVs([], {tag:["animation-timer", "system/timer"], resolution:33.333333333333})
+prog.inputEavs(inputs);
