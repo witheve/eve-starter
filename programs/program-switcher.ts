@@ -3,6 +3,21 @@ import {Program, appendAsEAVs, RawEAV} from "witheve";
 let prog = new Program("test");
 prog.attach("ui");
 
+/*
+ * # Description
+ *
+ * The program switcher is a simple example of I/O between Eve and your existing JS program.
+ * The server supplies a list of valid program urls attached to the window as `__config.programs`.
+ * We insert these into Eve and, when one is clicked, a watcher redirects the browser to that location.
+ * Obviously this can be done using anchor tags, but that doesn't make for a very interesting demo. ;)
+ *
+ * # Notes
+ *
+ * More detailed documentation on the watcher interface is on the way.
+ * Until then, Corey has provided a little more detail here:
+ * <https://groups.google.com/d/msg/eve-talk/OaYaeJKJUiU/XrRn3HjfEwAJ>
+ */
+
 prog
   .block("Draw a container for the program links.", ({record}) => {
     return [
