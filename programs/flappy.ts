@@ -2,28 +2,15 @@
 // Flappy
 //--------------------------------------------------------------------
 
-import {Program} from "witheve";
+import {Program, appendAsEAVs} from "witheve";
 import {v4 as uuid} from "node-uuid";
-import {PerformanceReporter} from "./perfReport";
 
-//--------------------------------------------------------------------
-// Utils
-//--------------------------------------------------------------------
-
-function toEAVs(eavs:any[], obj:any) {
-  let record = uuid();
-  for(let attribute in obj) {
-    let values = obj[attribute];
-    if(values.constructor === Array) {
-      for(let value of values) {
-        eavs.push([record, attribute, value]);
-      }
-    } else {
-      eavs.push([record, attribute, values]);
-    }
-  }
-  return eavs;
-}
+/*
+ * # Description
+ *
+ * More or less a direct port of flappy.eve.
+ * <http://incidentalcomplexity.com/2016/08/23/flappy-eve/>
+ */
 
 //--------------------------------------------------------------------
 // Program
@@ -276,39 +263,10 @@ prog
 //--------------------------------------------------------------------
 
 let changes:any[] = [];
-toEAVs(changes, {tag:["frames", "system/timer"], resolution:33.333333333333})
-toEAVs(changes, {tag:["player", "self"], name:"eve", x:25, y:50, velocity:0})
-toEAVs(changes, {tag:"world", screen:"menu", frame:0, distance:0, best:0, gravity:-0.061})
-toEAVs(changes, {tag:"obstacle", gap:35, offset:0})
-toEAVs(changes, {tag:"obstacle", gap:35, offset:-1})
+appendAsEAVs(changes, {tag:["frames", "system/timer"], resolution:33.333333333333})
+appendAsEAVs(changes, {tag:["player", "self"], name:"eve", x:25, y:50, velocity:0})
+appendAsEAVs(changes, {tag:"world", screen:"menu", frame:0, distance:0, best:0, gravity:-0.061})
+appendAsEAVs(changes, {tag:"obstacle", gap:35, offset:0})
+appendAsEAVs(changes, {tag:"obstacle", gap:35, offset:-1})
 
-// console.profile("flappy");
 prog.inputEavs(changes);
-
-// prog.inputEavs([["meep", "tag", "frames"], ["meep", "frame", 1]])
-// prog.inputEavs(toEAVs([], {tag: ["html/event/click", "html/direct-target"]}));
-// prog.inputEavs([["meep", "frame", 2], ["meep", "frame", 1, -1]])
-// prog.inputEavs([["meep", "frame", 3], ["meep", "frame", 2, -1]])
-// prog.inputEavs(toEAVs([], {tag: ["html/event/click", "html/direct-target"]}));
-// prog.inputEavs([["meep", "frame", 4], ["meep", "frame", 3, -1]])
-// prog.inputEavs([["meep", "frame", 5], ["meep", "frame", 4, -1]])
-// prog.inputEavs(toEAVs([], {tag: ["html/event/click", "html/direct-target"]}));
-// prog.inputEavs([["meep", "frame", 6], ["meep", "frame", 5, -1]])
-// prog.inputEavs([["meep", "frame", 7], ["meep", "frame", 6, -1]])
-// prog.inputEavs([["meep", "frame", 8], ["meep", "frame", 7, -1]])
-// for(let ix = 9; ix < 60; ix++) {
-//   prog.inputEavs([["meep", "frame", ix], ["meep", "frame", ix-1, -1]])
-//   prog.inputEavs(toEAVs([], {tag: ["html/event/click", "html/direct-target"]}));
-// }
-// for(let ix = 60; ix < 100; ix++) {
-//   prog.inputEavs([["meep", "frame", ix], ["meep", "frame", ix-1, -1]])
-// }
-//   prog.inputEavs(toEAVs([], {tag: ["html/event/click", "html/direct-target"]}));
-// // for(let ix = 100; ix < 200; ix++) {
-// //   prog.inputEavs([["meep", "frame", ix], ["meep", "frame", ix-1, -1]])
-// // }
-// console.profileEnd();
-
-// let reporter = new PerformanceReporter();
-// reporter.report(prog.context.tracker);
-console.log(prog);
