@@ -39,7 +39,7 @@ prog.attach("canvas");
  */
 
 
-prog.block("Draw a simple square.", ({find, record}) => {
+prog.bind("Draw a simple square.", ({find, record}) => {
   let example = "Square";
   return [
     record("container", {example}).add("children", [
@@ -52,7 +52,7 @@ prog.block("Draw a simple square.", ({find, record}) => {
   ];
 });
 
-prog.block("Draw a compound path.", ({find, record}) => {
+prog.bind("Draw a compound path.", ({find, record}) => {
   let example = "Compound path";
   return [
     record("container", {example}).add("children", [
@@ -67,7 +67,7 @@ prog.block("Draw a compound path.", ({find, record}) => {
   ];
 });
 
-prog.block("Draw a canvas with multiple paths.", ({find, record}) => {
+prog.bind("Draw a canvas with multiple paths.", ({find, record}) => {
   let example = "Multiple paths";
   return [
     record("container", {example}).add("children", [
@@ -87,7 +87,7 @@ prog.block("Draw a canvas with multiple paths.", ({find, record}) => {
   ];
 });
 
-prog.block("Reusable equilateral triangle path block.", ({find, lib:{math}, record}) => {
+prog.bind("Reusable equilateral triangle path block.", ({find, lib:{math}, record}) => {
   let triangle = find("triangle");
   let {x, y, side} = triangle;
   let adjacent = side * math.cos(30); // height of the triangle.
@@ -101,7 +101,7 @@ prog.block("Reusable equilateral triangle path block.", ({find, lib:{math}, reco
   ];
 })
 
-prog.block("Draw a canvas with a reusable path component.", ({find, record}) => {
+prog.bind("Draw a canvas with a reusable path component.", ({find, record}) => {
   let example = "Reusable path component";
   return [
     record("container", {example}).add("children", [
@@ -134,7 +134,7 @@ prog.commit("When a container for an animated circle is hovered, allow its frame
   ];
 })
 
-prog.block("Draw an animated pulsing ball.", ({find, lib:{math}, choose, record}) => {
+prog.bind("Draw an animated pulsing ball.", ({find, lib:{math}, choose, record}) => {
   let example = "Animated (hover me!)";
   //let timer = find("animation-timer");
   let animated = find("animated-circle");
@@ -155,7 +155,7 @@ prog.block("Draw an animated pulsing ball.", ({find, lib:{math}, choose, record}
   ];
 });
 
-prog.block("An example container is a div with a title.", ({find, record}) => {
+prog.bind("An example container is a div with a title.", ({find, record}) => {
   let container = find("container");
   return [
     container.add({tag: "html/element", tagname: "div", class: "container"}).add("children", [
@@ -165,7 +165,7 @@ prog.block("An example container is a div with a title.", ({find, record}) => {
 })
 
 
-prog.block("Add some CSS to spruce the place up.", ({record}) => {
+prog.bind("Add some CSS to spruce the place up.", ({record}) => {
   return [
     record("html/element", {tagname: "style", text: `
       body { flex-direction: row; justify-content: flex-start; align-content: flex-start; flex-wrap: wrap; }

@@ -18,7 +18,7 @@ prog.attach("ui");
  */
 
 prog
-  .block("Draw a container for the program links.", ({record}) => {
+  .bind("Draw a container for the program links.", ({record}) => {
     return [
       record("container", "ui/column"),
       record("html/element", {tagname: "style", text: `
@@ -29,7 +29,7 @@ prog
       `})
     ];
   })
-  .block("Draw a button for each program.", ({find, record}) => {
+  .bind("Draw a button for each program.", ({find, record}) => {
     let container = find("container");
     let program = find("program");
     return [
@@ -39,7 +39,7 @@ prog
       ])
     ];
   })
-  .block("If there aren't any programs, tell the user.", ({find, not, record}) => {
+  .bind("If there aren't any programs, tell the user.", ({find, not, record}) => {
     let container = find("container");
     not(() => find("program"));
     return [

@@ -26,7 +26,7 @@ prog.attach("svg");
 //     [#clock-hand #second-hand degrees: 6 * seconds, length: 40, stroke: "#ce0b46"]]
 // ~~~
 
-prog.block("draw a clock", ({find, record}) => {
+prog.bind("draw a clock", ({find, record}) => {
   let timer = find("clock-timer");
   return [
     record("svg", {viewBox: "0 0 100 100", width: "300px", timer}).add("children", [
@@ -38,7 +38,7 @@ prog.block("draw a clock", ({find, record}) => {
   ]
 })
 
-prog.block("draw clock hands", ({find, lib}) => {
+prog.bind("draw clock hands", ({find, lib}) => {
   let {math} = lib;
   let hand = find("clock-hand");
   let x2 = 50 + hand.length * math.sin(hand.degrees)
@@ -53,15 +53,15 @@ prog.block("draw clock hands", ({find, lib}) => {
 })
 
 prog
-  .block("Translate elements into svg", ({find, record, union}) => {
+  .bind("Translate elements into svg", ({find, record, union}) => {
     let elem = find("svg");
     return [elem.add("tag", "svg/element").add("tagname", "svg")];
   })
-  .block("Translate elements into svg", ({find, record, union}) => {
+  .bind("Translate elements into svg", ({find, record, union}) => {
     let elem = find("svg/circle");
     return [elem.add("tag", "svg/element").add("tagname", "circle")];
   })
-  .block("Translate elements into svg", ({find, record, union}) => {
+  .bind("Translate elements into svg", ({find, record, union}) => {
     let elem = find("svg/line");
     return [elem.add("tag", "svg/element").add("tagname", "line")];
   });

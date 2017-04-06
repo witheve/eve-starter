@@ -32,7 +32,7 @@ prog.attach("ui");
 // v2 = [#eve/compiler/var]
 // vContainer = [#eve/compiler/var]
 // vName = [#eve/compiler/var]
-// [#eve/compiler/block name:"some cool block" type:"block" constraint:
+// [#eve/compiler/block name:"some cool block" type:"bind" constraint:
 //    [#eve/compiler/record record: v1 attribute:
 //      [attribute: "tag", value: "person"]
 //      [attribute: "tag", value: "employee"]
@@ -49,14 +49,14 @@ prog.attach("ui");
 //    [#eve/compiler/output record: container attribute:
 //      [attribute: "children", value: v2]]]
 
-prog.block("Some cool block.", ({record}) => {
+prog.bind("Some cool block.", ({record}) => {
   let example = "some cool block";
   return [
     record("container", {example})
   ];
 })
 
-prog.block("Demo the above block.", ({find, record}) => {
+prog.bind("Demo the above block.", ({find, record}) => {
   let example = "some cool block";
   let v1, v2, vName, vContainer;
   return [
@@ -64,7 +64,7 @@ prog.block("Demo the above block.", ({find, record}) => {
     v2 = record("eve/compiler/var", {name: "v2"}),
     vName = record("eve/compiler/var", {name: "vName"}),
     vContainer = record("eve/compiler/var", {name: "vContainer"}),
-    record("eve/compiler/block", {name: example, type: "block"}).add("constraint", [
+    record("eve/compiler/block", {name: example, type: "bind"}).add("constraint", [
       record("eve/compiler/record", {record: v1}).add("attribute", [
         record({attribute: "tag", value: "person"}),
         record({attribute: "tag", value: "employee"}),
@@ -88,7 +88,7 @@ prog.block("Demo the above block.", ({find, record}) => {
   ];
 });
 
-prog.block("An example container is a div with a title.", ({find, record}) => {
+prog.bind("An example container is a div with a title.", ({find, record}) => {
   let container = find("container");
   return [
     container.add({tag: "html/element", tagname: "div", class: "container"}).add("children", [
@@ -98,7 +98,7 @@ prog.block("An example container is a div with a title.", ({find, record}) => {
 })
 
 
-prog.block("Add some CSS to spruce the place up.", ({record}) => {
+prog.bind("Add some CSS to spruce the place up.", ({record}) => {
   return [
     record("html/element", {tagname: "style", text: `
       body { flex-direction: row; justify-content: flex-start; align-content: flex-start; flex-wrap: wrap; }

@@ -21,7 +21,7 @@ prog.attach("shape");
  */
 
 // Just a convenient shortcut vs creating a new path and calling rect directly for every square.
-prog.block("Draw a square path.", ({find, lib:{math}, choose, record}) => {
+prog.bind("Draw a square path.", ({find, lib:{math}, choose, record}) => {
   let example = "square path";
   return [
     record("canvas-container", {sort: 1, example}).add("paths", [
@@ -31,7 +31,7 @@ prog.block("Draw a square path.", ({find, lib:{math}, choose, record}) => {
 });
 
 // Regular hexagon with origin at the top vertex.
-prog.block("Draw a hexagon path.", ({find, lib:{math}, choose, record}) => {
+prog.bind("Draw a hexagon path.", ({find, lib:{math}, choose, record}) => {
   let example = "hexagon path";
   return [
     record("canvas-container", {sort: 2, example}).add("paths", [
@@ -41,7 +41,7 @@ prog.block("Draw a hexagon path.", ({find, lib:{math}, choose, record}) => {
 });
 
 // The hexagon container has both a canvas and an overlaid div positioned to allow "filling" the hex with content of your choice.
-prog.block("Draw a hexagon container.", ({find, record}) => {
+prog.bind("Draw a hexagon container.", ({find, record}) => {
   let example = "hexagon container";
   return [
     record("container", {sort: 3, example}).add("children", [
@@ -65,7 +65,7 @@ prog.commit("Add a range to create cells for the hex-grid with.", ({record}) => 
 // The hex grid absolutely positions it's cells in tiled regular hexagons of the specified dimensions.
 // @NOTE: This is really slow atm for entirely avoidable reasons. It's being worked on.
 //        Thanks to incrementalism you only incur this perf penalty whenever you lay out a bunch of new cells at once though.
-prog.block("Draw a hex grid.", ({find, record}) => {
+prog.bind("Draw a hex grid.", ({find, record}) => {
   let example = "hex grid";
   let side = 15;
   let {number:x} = find("range");
@@ -79,7 +79,7 @@ prog.block("Draw a hex grid.", ({find, record}) => {
   ];
 });
 
-prog.block("An example container is a div with a title.", ({find, record}) => {
+prog.bind("An example container is a div with a title.", ({find, record}) => {
   let container = find("container");
   return [
     container.add({tag: "html/element", tagname: "div", class: "container"}).add("children", [
@@ -88,7 +88,7 @@ prog.block("An example container is a div with a title.", ({find, record}) => {
   ];
 })
 
-prog.block("A canvas container is a regular container with a canvas in it.", ({find, record}) => {
+prog.bind("A canvas container is a regular container with a canvas in it.", ({find, record}) => {
   let container = find("canvas-container");
   return [
     container.add("tag", "container").add("children", [
@@ -97,7 +97,7 @@ prog.block("A canvas container is a regular container with a canvas in it.", ({f
   ];
 })
 
-prog.block("Add some CSS to spruce the place up.", ({record}) => {
+prog.bind("Add some CSS to spruce the place up.", ({record}) => {
   return [
     record("html/element", {tagname: "style", text: `
       body { flex-direction: row; justify-content: flex-start; align-content: flex-start; flex-wrap: wrap; }

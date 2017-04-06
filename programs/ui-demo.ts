@@ -16,7 +16,7 @@ prog.attach("ui");
  */
 
 
-prog.block("Demo column.", ({record}) => {
+prog.bind("Demo column.", ({record}) => {
   let example = "column";
   return [
     record("container", {sort: 1, example}).add("children", [
@@ -29,7 +29,7 @@ prog.block("Demo column.", ({record}) => {
   ];
 });
 
-prog.block("Demo row.", ({record}) => {
+prog.bind("Demo row.", ({record}) => {
   let example = "row";
   return [
     record("container", {sort: 2, example}).add("children", [
@@ -42,7 +42,7 @@ prog.block("Demo row.", ({record}) => {
   ];
 });
 
-prog.block("Demo button.", ({record}) => {
+prog.bind("Demo button.", ({record}) => {
   let example = "button";
   return [
     record("container", {sort: 3, example}).add("children", [
@@ -62,7 +62,7 @@ prog.block("Demo button.", ({record}) => {
   ];
 });
 
-prog.block("Demo autocomplete.", ({find, record}) => {
+prog.bind("Demo autocomplete.", ({find, record}) => {
   let example = "autocomplete";
   let person = find("person");
   return [
@@ -74,7 +74,7 @@ prog.block("Demo autocomplete.", ({find, record}) => {
   ];
 });
 
-prog.block("Demo field-table", ({find, lookup, record}) => {
+prog.bind("Demo field-table", ({find, lookup, record}) => {
   let example = "table";
   let person = find("person", "jeff");
   let {attribute, value} = lookup(person);
@@ -86,7 +86,7 @@ prog.block("Demo field-table", ({find, lookup, record}) => {
   ];
 });
 
-prog.block("Demo editable field-table", ({find, lookup, record}) => {
+prog.bind("Demo editable field-table", ({find, lookup, record}) => {
   let example = "editable table";
   let person = find("person", "jeff");
   let {attribute, value} = lookup(person);
@@ -100,7 +100,7 @@ prog.block("Demo editable field-table", ({find, lookup, record}) => {
   ];
 });
 
-// prog.block("Display field changes", ({find, choose, record}) => {
+// prog.bind("Display field changes", ({find, choose, record}) => {
 //   let container = find("container", {example: "editable field-table"});
 //   let table = find("ui/field-table", {person: container.person});
 //   let field_change = table.change;
@@ -129,7 +129,7 @@ prog.commit("Test data for autocomplete and field table", ({find, record}) => {
   ];
 });
 
-prog.block("An example container is a div with a title.", ({find, record}) => {
+prog.bind("An example container is a div with a title.", ({find, record}) => {
   let container = find("container");
   return [
     container.add({tag: "ui/column", class: "container"}).add("children", [
@@ -138,7 +138,7 @@ prog.block("An example container is a div with a title.", ({find, record}) => {
   ];
 })
 
-prog.block("Add some CSS to spruce the place up.", ({record}) => {
+prog.bind("Add some CSS to spruce the place up.", ({record}) => {
   return [
     record("html/element", {tagname: "style", text: `
       body { flex-direction: row; justify-content: flex-start; align-content: flex-start; flex-wrap: wrap; }

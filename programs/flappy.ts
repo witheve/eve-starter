@@ -44,7 +44,7 @@ prog.commit("draw the game world", ({find, record}) => {
 // menu screens
 //--------------------------------------------------------------------
 
-prog.block("draw the main menu", ({find, record}) => {
+prog.bind("draw the main menu", ({find, record}) => {
   find("world", {screen:"menu"})
   let svg = find("game-window");
   return [
@@ -52,7 +52,7 @@ prog.block("draw the main menu", ({find, record}) => {
   ]
 });
 
-prog.block("draw the game over menu", ({find, record}) => {
+prog.bind("draw the game over menu", ({find, record}) => {
   let {score, best} = find("world", {screen:"game over"});
   let svg = find("game-window");
   return [
@@ -69,7 +69,7 @@ prog.block("draw the game over menu", ({find, record}) => {
 // Score
 //--------------------------------------------------------------------
 
-prog.block("calculate the score", ({find, record, lib}) => {
+prog.bind("calculate the score", ({find, record, lib}) => {
   let {math} = lib;
   let world = find("world")
   return [
@@ -107,7 +107,7 @@ prog.commit("clicking starts the game", ({find, record, lib, choose}) => {
 // Draw the player
 //--------------------------------------------------------------------
 
-prog.block("draw the player", ({find, record}) => {
+prog.bind("draw the player", ({find, record}) => {
   let svg = find("game-window");
   let player = find("player");
   return [
@@ -123,7 +123,7 @@ prog.block("draw the player", ({find, record}) => {
 // Obstacles
 //--------------------------------------------------------------------
 
-prog.block("draw obstacles", ({find, record}) => {
+prog.bind("draw obstacles", ({find, record}) => {
   let svg = find("game-window");
   let obstacle = find("obstacle");
   let {height, gap} = obstacle;
@@ -142,7 +142,7 @@ prog.block("draw obstacles", ({find, record}) => {
   ]
 })
 
-prog.block("every 2 distance, a wild obstacle appears", ({find, lib: {math}}) => {
+prog.bind("every 2 distance, a wild obstacle appears", ({find, lib: {math}}) => {
   let {distance} = find("world");
   let obstacle = find("obstacle");
   let obstacleDistance = distance + obstacle.offset;
@@ -235,25 +235,25 @@ prog.commit("collide with obstacle", ({find, choose, lib: {math}}) => {
 //--------------------------------------------------------------------
 
 prog
-  .block("Translate elements into html", ({find, record, union}) => {
+  .bind("Translate elements into html", ({find, record, union}) => {
     let elem = find("html/div");
     return [elem.add("tag", "html/element").add("tagname", "div")];
   })
 
 prog
-  .block("Translate elements into svg", ({find, record, union}) => {
+  .bind("Translate elements into svg", ({find, record, union}) => {
     let elem = find("svg");
     return [elem.add("tag", "svg/element").add("tagname", "svg")];
   })
-  .block("Translate elements into svg", ({find, record, union}) => {
+  .bind("Translate elements into svg", ({find, record, union}) => {
     let elem = find("svg/rect");
     return [elem.add("tag", "svg/element").add("tagname", "rect")];
   })
-  .block("Translate elements into svg", ({find, record, union}) => {
+  .bind("Translate elements into svg", ({find, record, union}) => {
     let elem = find("svg/text");
     return [elem.add("tag", "svg/element").add("tagname", "text")];
   })
-  .block("Translate elements into svg", ({find, record, union}) => {
+  .bind("Translate elements into svg", ({find, record, union}) => {
     let elem = find("svg/image");
     return [elem.add("tag", "svg/element").add("tagname", "image")];
   });
