@@ -5,7 +5,11 @@ prog.attach("system"); // For the timer
 prog.attach("canvas");
 
 /*
- * # TERMINOLOGY
+ * # Description
+ *
+ * The Canvas watcher allows you to declaratively draw to HTML5 canvas elements.
+ *
+ * # Terms
  *
  * - `canvas/root` is an html canvas element <https://developer.mozilla.org/en-US/docs/Web/HTML/Element/canvas>.
  * - `canvas/path` is a Path2D <https://developer.mozilla.org/en-US/docs/Web/API/Path2D>.
@@ -23,13 +27,15 @@ prog.attach("canvas");
  * Without it, both blocks would write into the same canvas in the same container, leading to a single canvas with all the paths
  * of the individual examples in it!
  *
- * Canvas has primitive operations for many shapes. For those it doesn't, you can easily build your own reusable path-making blocks.
- * The Shape watcher has a few of these available already.
- *
  * In the current version of the canvas watcher, all attributes for an operation are *required*. We'll fix this in the future.
  *
  * For optimal performance, it's recommended that you try to separate things which change frequently
  * and things that don't into separate paths, as the Canvas API requires rerendering an entire path when it changes.
+ *
+ * # See Also
+ *
+ * - **Shape Demo** - Canvas has primitive operations for many shapes. For those it doesn't, you can easily build your own reusable path-making blocks.
+ *     The Shape watcher has a few of these available already.
  */
 
 
