@@ -32,7 +32,7 @@ prog.commit("Add some data to play with.", ({find, record}) => {
   ];
 });
 
-prog.inputEavs([["dummy", "tag", "turtle"]]);
+prog.inputEAVs([["dummy", "tag", "turtle"]]);
 
 // let fixture:RawEAV[] = [];
 // appendAsEAVs(fixture, {tag: "person", name: "Josh", boat: [BOAT_1_ID, BOAT_3_ID], age: 23}, PERSON_1_ID);

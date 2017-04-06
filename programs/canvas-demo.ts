@@ -179,4 +179,4 @@ prog.block("Add some CSS to spruce the place up.", ({record}) => {
 // @NOTE: Make sure to input something here.
 //        Due to a minor implementation issue, input needs to be triggered at least once for the program to execute.
 let inputs = appendAsEAVs([], {tag:["animation-timer", "system/timer"], resolution:33.333333333333})
-prog.inputEavs(inputs);
+prog.inputEAVs(inputs);

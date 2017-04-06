@@ -160,6 +160,6 @@ prog.block("Add some CSS to spruce the place up.", ({record}) => {
 })
 
 
-prog.inputEavs([
+prog.inputEAVs([
   [1, "tag", "turtle"]
 ]);

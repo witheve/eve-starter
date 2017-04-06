@@ -13,9 +13,8 @@ prog.attach("ui");
  *
  * # Notes
  *
- * More detailed documentation on the watcher interface is on the way.
- * Until then, Corey has provided a little more detail here:
- * <https://groups.google.com/d/msg/eve-talk/OaYaeJKJUiU/XrRn3HjfEwAJ>
+ * More detailed documentation on the watcher interface is on the way. A survival guide is in the works on the Docs repo:
+ * <https://github.com/witheve/docs/pull/73>
  */
 
 prog
@@ -80,6 +79,6 @@ for(let program of programs) {
 if(!programEAVs.length) {
   programEAVs.push(["dummy", "tag", "dummy"]);
 }
-prog.inputEavs(programEAVs)
+prog.inputEAVs(programEAVs)
 
 console.log(programs);

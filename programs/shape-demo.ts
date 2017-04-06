@@ -112,4 +112,4 @@ let changes:any[] = [
   ["dummy", "tag", "turtle"]
 ];
 appendAsEAVs(changes, {tag:["my-timer", "system/timer"], resolution:16.666})
-prog.inputEavs(changes);
+prog.inputEAVs(changes);

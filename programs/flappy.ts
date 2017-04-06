@@ -269,4 +269,4 @@ appendAsEAVs(changes, {tag:"world", screen:"menu", frame:0, distance:0, best:0, 
 appendAsEAVs(changes, {tag:"obstacle", gap:35, offset:0})
 appendAsEAVs(changes, {tag:"obstacle", gap:35, offset:-1})
 
-prog.inputEavs(changes);
+prog.inputEAVs(changes);

@@ -110,7 +110,7 @@ prog.block("Add some CSS to spruce the place up.", ({record}) => {
 })
 
 
-prog.inputEavs([
+prog.inputEAVs([
   ["JANE", "tag", "person"],
   ["JANE", "tag", "employee"],
   ["JANE", "name", "Jane"],
