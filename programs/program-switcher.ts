@@ -49,7 +49,7 @@ prog
     return [
       container.add("children", [
         record("ui/text", {sort: 1, class: "header", text: "Eve Starter"}),
-        record("ui/text", {sort: 2, text: "The starter is a playground for exploring examples and building new applications with Eve 0.3.0.\n\nClick on a link below to execute a program. Follow along with its source code in your editor of choice in "}),
+        record("ui/text", {sort: 2, text: "The starter is a playground for exploring examples and building new applications with Eve 0.3.0.\n\nClick on a link to execute a program. Follow along with its source code in your editor of choice in "}),
         record("ui/text", {sort: 3, class: "code", text: "eve-starter/programs/"}),
         record("ui/text", {sort: 4, text: ". For a primer on working with Eve's new JavaScript DSL, check out "}),
         record("html/element", {sort: 5, tagname: "a", href: "https://github.com/witheve/docs/blob/master/guides/dsl.md", text: "the DSL guide"}),
