@@ -20,26 +20,26 @@ prog.attach("ui");
 prog
   .bind("Draw a container for the program links.", ({record}) => {
     return [
-      record("ui/spacer", {sort: 1}),
-      record("intro-container", "container", "html/element", {sort: 2, tagname: "div"}),
-      record("program-container", "container", "ui/column", {sort: 3}),
-      record("ui/spacer", {sort: 4}),
+      record("program-container", "container", "ui/column", {sort: 2}),
+      record("intro-container", "container", "html/element", {sort: 3, tagname: "div"}),
       record("html/element", {tagname: "style", text: `
-        body { flex-direction: row; justify-content: space-around; align-items: center; }
+        body { flex-direction: row; justify-content: flex-start; align-items: center; }
         a { display: inline-block; }
-        .container {flex: 0 0 auto; align-items: flex-start; max-width: 500; margin: 20; padding: 20; background: white; border-radius: 3px; box-shadow: 0 3px 4px rgba(0, 0, 0, 0.1); line-height: 1.5; }
+        .container {flex: 0 0 auto; align-items: flex-start; max-width: 500; padding: 20; background: white; border-radius: 3px; box-shadow: 0 3px 4px rgba(0, 0, 0, 0.1); line-height: 1.5; }
 
-        .intro-container { flex: 0 1 auto; }
+        .intro-container { flex: 0 1 auto; margin: auto; }
         .container > text { display: inline; }
         .container > .header { display: block; width: 100%; margin-bottom: 1em; text-align: center; }
-        .container > .code { padding: 0 5; background: #eee; border-radius: 3px; white-space: nowrap; }
+        .container > .code { padding: 0 5; background: #eee; border-radius: 3px; font-family: "courier new"; white-space: nowrap; }
 
+        .program-container { align-self: stretch; overflow-y: auto; }
         .program-button {color: rgb(65, 161, 221); cursor: pointer; }
         .program-button:hover {color: rgb(78, 193, 255); text-decoration: underline; }
 
         @media (max-width: 800px) {
           body { flex-direction: column; align-items: stretch; }
-          .container { max-width: initial; }
+          .container { max-width: initial; margin: 20 40; }
+          .program-container { order: 2; }
         }
       `})
     ];
