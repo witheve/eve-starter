@@ -169,8 +169,8 @@ prog.bind("Add some CSS to spruce the place up.", ({record}) => {
   return [
     record("html/element", {tagname: "style", text: `
       body { flex-direction: row; justify-content: flex-start; align-content: flex-start; flex-wrap: wrap; }
-      .container { flex: 0 0 auto; margin: 20; padding: 20; padding-top: 0; width: 200; height: 202; background: white; border-radius: 3px;  box-shadow: 0 3px 4px rgba(0, 0, 0, 0.1); }
-      .container > div { margin: 10 0; text-align: center; }
+      .container { flex: 0 0 auto; margin: 20px; padding: 20px; padding-top: 0; width: 200px; height: 202px; background: white; border-radius: 3px;  box-shadow: 0 3px 4px rgba(0, 0, 0, 0.1); }
+      .container > div { margin: 10px 0; text-align: center; }
     `})
   ];
 })
