@@ -51,7 +51,7 @@ program
   .option("-f, --list-found", "List all programs and watchers found within their search paths")
   .parse(process.argv);
 
-let opts = program.opts();
+let opts = program.opts() as {[key:string]: any};
 config.fromObject({
   workspacePaths: opts["workspace"],
   watcherPaths: opts["include"],
