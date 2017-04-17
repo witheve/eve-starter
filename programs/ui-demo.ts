@@ -142,19 +142,19 @@ prog.bind("Add some CSS to spruce the place up.", ({record}) => {
   return [
     record("html/element", {tagname: "style", text: `
       body { flex-direction: row; justify-content: flex-start; align-content: flex-start; flex-wrap: wrap; }
-      .container { flex: 0 0 auto; margin: 20; padding: 20; padding-top: 0; width: 200; height: 202; background: white; border-radius: 3px;  box-shadow: 0 3px 4px rgba(0, 0, 0, 0.1); }
-      .container > text:first-child { margin: 10 0; text-align: center; }
-      .container.expando { align-self: flex-start; width: auto; height: auto; min-height: 202; }
+      .container { flex: 0 0 auto; margin: 20px; padding: 20px; padding-top: 0; width: 200px; height: 202px; background: white; border-radius: 3px;  box-shadow: 0 3px 4px rgba(0, 0, 0, 0.1); }
+      .container > text:first-child { margin: 10px 0; text-align: center; }
+      .container.expando { align-self: flex-start; width: auto; height: auto; min-height: 202px; }
 
       .outline { flex: 1; border: 1px solid #ccc; }
       column > .outline + .outline { border-top-width: 0; }
       row > .outline + .outline { border-left-width: 0; }
 
-      row > .button + .button { margin-left: 10; }
+      row > .button + .button { margin-left: 10px; }
 
       .ui-autocomplete { width: 100%; }
 
-      .changelog { flex: 0 0 auto; padding: 10; margin: 10; border: 1px solid #ccc; }
+      .changelog { flex: 0 0 auto; padding: 10px; margin: 10px; border: 1px solid #ccc; }
     `})
   ];
 })
