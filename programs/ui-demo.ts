@@ -124,8 +124,9 @@ prog.commit("Test data for autocomplete and field table", ({find, record}) => {
     record("person", "jeff", {name: "Jeff Smith", age: 27, weight: 172, eyes: "blue"}),
     record("person", {name: "George Washington"}),
     record("person", {name: "Svenka Peterson"}),
-    record("person", {name: "Jeff Bloom"}),
-    record("person", {name: "Jean Gray"})
+    record("person", {name: "Jeff Bloomberg"}),
+    record("person", {name: "Jean Gray"}),
+    record("person", {name: "Zach"})
   ];
 });
 

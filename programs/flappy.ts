@@ -85,8 +85,7 @@ prog.commit("clicking starts the game", ({find, record, lib, choose}) => {
   let {math} = lib;
   let world = find("world");
   let svg = find("game-window");
-  // find("html/event/click", {element:svg});
-  find("html/event/click", "html/direct-target");
+  find("html/event/click");
 
   choose(() => { world.screen == "menu" },
          () => { world.screen == "game over"});
@@ -172,7 +171,7 @@ prog.commit("adjust the height of the gap", ({find, lib: {math, random}}) => {
 
 prog.commit("apply a velocity when you click", ({find}) => {
   let world = find("world", {screen:"game"})
-  find("html/event/click", "html/direct-target")
+  find("html/event/click")
   let player = find("player", "self");
   return [
     player.remove("velocity").add("velocity", 1.17)
@@ -189,7 +188,6 @@ prog.commit("scroll the world", ({find, not}) => {
   frame != world.frame
   let player = find("player");
   let adjust = 1 / 30;
-  not(() => { find("html/event/click") })
 
   return [
     world.remove("frame").add("frame", frame)
