@@ -12,5 +12,8 @@ SystemJS.config({
   packageConfigPaths: ['/node_modules/*/package.json'],
   packages: {
     "/build": {defaultExtension: "js"},
+    "uuid": {
+      map: {"./lib/rng": "./lib/rng-browser"}
+    }
   },
 });
