@@ -1,5 +1,5 @@
 import {Program} from "witheve";
-import CompilerWatcher from "witheve/build/src/watchers/compiler";
+import {CompilerWatcher} from "witheve";
 
 let prog = new Program("compiler test");
 let compiler:CompilerWatcher = prog.attach("compiler") as any;
