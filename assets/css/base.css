@@ -56,3 +56,14 @@ text { display: inline-block; white-space: pre-wrap; }
 .shape-hexagon {position: relative;}
 .shape-hexagon > canvas {position: absolute;top: 0;left: 0;width: 100%;height: 100%;}
 .shape-hexagon > div { display: flex; flex-direction: column; justify-content: center; align-items: center; position: absolute; }
+
+/******************************************************************************\
+ * compiler
+\******************************************************************************/
+
+.eve-compiler-error { background:#333; color: #ccc; margin:20px; padding:10px 20px; align-self:center; width:700px; border-radius:3px; box-shadow:2px 2px 8px #999; }
+.eve-compiler-line-info { margin-right:20px; color: #999; margin-right: 20px; padding-right: 20px; color: #888; border-right: 1px solid #666; justify-content: center;}
+.eve-compiler-error-sample { font-family:"Inconsolata", "Monaco", "Consolas", "Ubuntu Mono", monospace; margin-top:10px; background:#444; padding:10px; border-radius:3px; }
+.eve-compiler-error-message-line { font-size:20pt; color: #ff8c24; }
+.eve-compiler-error-message { color: #ff8c24; }
+.eve-compiler-error-content {padding: 5px; flex: 1;}
