@@ -11,11 +11,12 @@ This application demonstrates some basic patterns you might want to use in a mob
 
 ## The App Record
 
-`#app` stores some useful state for the application, including the current user, the current page, and the current contact.
+`#app` stores some useful state for the application, including the current user, the current page, and the current contact. We also create a timer here to let us keep track of wall clock time.
 
 ```
 commit
   [#app]
+  [#system/timer #time resolution: 1000]
 ```
 
 Set some initial state on `#app` and mark it as `#init`. This block sets the start time of the app, so `#time` is brought into the search. Since we only want this to happen once, we search for `#app` that is not `#init`. Then, we mark the `#app` as `#init` to prevent the block from firing again due to a time update.
@@ -34,6 +35,33 @@ commit
           start-time: [#start-time day month year hours minutes seconds ampm]]
 ```
 
+### Time Formatting
+
+Whether the current time is AM or PM.
+
+```
+search
+  time = [#time hours]
+  ampm = if hours < 12 then "AM"
+         else "PM"
+
+bind
+  time.ampm := ampm
+```
+
+Format the current time into a human-friendly string for use throughout the app.
+
+```
+search
+  time = [#time hours minutes ampm]
+  hr = if hours = 0 then "12"
+       if hours <= 12 then "{{hours}}"
+       else "{{hours - 12}}"
+
+bind
+  time.time-string := "{{hr}}:{{minutes}} {{ampm}}"
+```
+
 ### Main App
 
 The main application is a shell for all other pages in the app. This component draws the main interface, navigation buttons, and provides a "content" div into which other pages are injected.
@@ -50,29 +78,29 @@ search
                     else user
 
 bind
-  [#ui/link rel: "stylesheet" href: "assets/css/examples/crm.css"]
-  [#ui/div #container class: "container" children:
-    [#ui/div class: "scroll" children:
+  [#ui/link rel: "stylesheet" href: "/assets/css/examples/crm.css"]
+  [#ui/div #container class: "container" | children:
+    [#ui/div #main-scroll class: "scroll" | children:
       [#ui/div class: "banner"]
-      [#div class: "bio-info" children:
-        [#ui/div class: "avatar-container" children:
+      [#ui/div current-contact class: "bio-info" | children:
+        [#ui/div current-contact class: "avatar-container" | children:
           [#ui/img class: "avatar", src: current-contact.avatarURL]]
         [#ui/div class: "name2" text: "{{current-contact.name}}"]
         [#ui/div class: "info" text: "{{current-contact.title}}"]
         [#ui/div class: "info" text: "{{time-string}}, {{current-contact.location}}"]]
       [#ui/div #content class: "content"]]
-    [#ui/div class: "navigation" children:
-      [#ui/div #about #nav class: "nav-button middle", children:
+    [#ui/div class: "navigation" | children:
+      [#ui/div #about #nav class: "nav-button middle", | children:
         [#ui/div class: "icon ion-person"]
         [#ui/div class: "label" text: "profile"]]
-      [#ui/div #threads #nav class: "nav-button middle", children:
+      [#ui/div #threads #nav class: "nav-button middle", | children:
         [#ui/div class: "icon ion-chatboxes"]
         [#ui/div class: "bubble" text: threads]
         [#ui/div class: "label" text: "messages"]]
-      [#ui/div #contacts #nav class: "nav-button middle" children:
+      [#ui/div #contacts #nav class: "nav-button middle" | children:
         [#ui/div class: "icon ion-person-stalker" text: ""]
         [#ui/div class: "label" text: "contacts"]]
-      [#ui/div #more #nav class: "nav-button" children:
+      [#ui/div #more #nav class: "nav-button" | children:
         [#ui/div class: "icon ion-android-more-horizontal" text: ""]
         [#ui/div class: "label" text: "more"]]]]
 ```
@@ -103,16 +131,16 @@ search
   [#app page: [#about contact]]
 
 bind
-  content.children := [#ui/div class: "about" children:
-    [#ui/div class: "about-line", children:
+  content.children := [#ui/div contact class: "about" | children:
+    [#ui/div class: "about-line" contact | children:
       [#ui/span class: "about-label", text: "Phone"]
       [#ui/span text: contact.phone]]
-    [#ui/div class: "about-line", children:
+    [#ui/div class: "about-line" contact | children:
       [#ui/span class: "about-label", text: "Email"]
       [#ui/span text: contact.email]]
-    [#ui/div #recent-contacts children:
-      [#h3 text: "All Contacts ({{gather/count[for: contact.contacts]}})"]
-      [#ui/img #contact contact: contact.contacts, class: "recent-avatar" src: contact.contacts.avatarURL]]]
+    [#ui/div #recent-contacts contact | children:
+      [#ui/h3 text: "All Contacts ({{gather/count[for: contact.contacts]}})"]
+      [#ui/img #contact current-contact: contact, contact: contact.contacts, class: "recent-avatar" src: contact.contacts.avatarURL]]]
 ```
 
 If the user has threads, then recent contacts are displayed:
@@ -125,9 +153,9 @@ search
   recent = threads.users != contact
 
 bind
-  recent-div.children += [#ui/div children:
-    [#h3 text: "Recent Contacts ({{gather/count[for: recent]}})"]
-    [#ui/img class: "recent-avatar" src: recent.avatarURL]]
+  recent-div.children += [#ui/div recent-div | children:
+    [#ui/h3 text: "Recent Contacts ({{gather/count[for: recent]}})"]
+    [#ui/img recent class: "recent-avatar" src: recent.avatarURL]]
 ```
 
 If the user has no threads and is looking at his own about page, a message is displayed prompting the user to start a conversation with someone:
@@ -140,9 +168,9 @@ search
   not([#thread users: user])
 
 bind
-  recent-div.children += [#ui/div children:
-    [#h3 text: "Recent Contacts (0)"]
-    [#ui/div #contacts #nav children:
+  recent-div.children += [#ui/div recent-div | children:
+    [#ui/h3 text: "Recent Contacts (0)"]
+    [#ui/div #contacts #nav recent-div | children:
       [#ui/div class: "plus" text: "+"]
       [#ui/div text: "Start a Thread"]]]
 ```
@@ -173,9 +201,9 @@ search
   msgs.time = [timestamp time-string]
 
 bind
-  content.children := [#ui/div class: "flex-spacer" children:
-    [#ui/div #convo class: "convo" children:
-      [#ui/div sort: msgs.time.timestamp class: "msg" message: msgs children:
+  content.children := [#ui/div content class: "flex-spacer" | children:
+    [#ui/div #convo thread class: "convo" | children:
+      [#ui/div sort: msgs.time.timestamp class: "msg" message: msgs | children:
         [#ui/img class: "msg-avatar" src: msgs.sender.avatarURL]
         [#ui/span #contact contact: msgs.sender, class: "msg-name" text: name]
         [#ui/span class: "msg-time" text: time-string]
@@ -196,8 +224,8 @@ search
   message-count = gather/count[for: thread.messages, per: thread.users]
 
 bind
-  content.children := [#ui/div thread class: "thread" children:
-    [#ui/div #thread thread, class: "thread-box" children:
+  content.children := [#ui/div thread class: "thread" | children:
+    [#ui/div #thread thread, class: "thread-box" | children:
       [#ui/img class: "msg-avatar" src: contacts.avatarURL]
       [#ui/div class: "msg-name" text: contacts.name]
       [#ui/div text: "{{message-count}} messages"]]
@@ -226,7 +254,7 @@ search
   [#app user page: [#contacts]]
 
 bind
-  content.children := [#ui/div #contact contact: user.contacts, class: "contact" contact: user.contacts, children:
+  content.children := [#ui/div #contact contact: user.contacts, class: "contact-container" contact: user.contacts, | children:
     [#ui/img class: "contact-avatar" src: user.contacts.avatarURL]
     [#ui/div class: "contact-name", text: user.contacts.name]
     [#ui/div text: "Location: {{user.contacts.location}}"]
@@ -244,18 +272,18 @@ search
   [#app page: [#more]]
 
 bind @browser
-  content.children := [#ui/div #more class: "more" children:
-    [#h2 text: "Learn more about Eve"]
-    [#html/element tagname: "ul" children:
-      [#html/element tagname: "li" children: [#ui/a href: "http://witheve.com" text: "Homepage"]]
-      [#html/element tagname: "li" children: [#ui/a href: "https://witheve.github.io/docs/tutorials/quickstart/" text: "Quick Start Tutorial"]]
-      [#html/element tagname: "li" children: [#ui/a href: "http://github.com/witheve" text: "GitHub Repository"]]]
-    [#h2 text: "Join the Community"]
-    [#html/element tagname: "ul" children:
-      [#html/element tagname: "li" children: [#ui/a href: "http://blog.witheve.com" text: "Development Diary"]]
-      [#html/element tagname: "li" children: [#ui/a href: "https://github.com/witheve/rfcs" text: "Request for Comments"]]
-      [#html/element tagname: "li" children: [#ui/a href: "https://groups.google.com/forum/#!forum/eve-talk" text: "Mailing List"]]
-      [#html/element tagname: "li" children: [#ui/a href: "https://twitter.com/with_eve" text: "Twitter"]]]]
+  content.children := [#ui/div #more class: "more" | children:
+    [#ui/h2 text: "Learn more about Eve"]
+    [#html/element tagname: "ul" | children:
+      [#html/element tagname: "li" | children: [#ui/a href: "http://witheve.com" text: "Homepage"]]
+      [#html/element tagname: "li" | children: [#ui/a href: "https://witheve.github.io/docs/tutorials/quickstart/" text: "Quick Start Tutorial"]]
+      [#html/element tagname: "li" | children: [#ui/a href: "http://github.com/witheve" text: "GitHub Repository"]]]
+    [#ui/h2 text: "Join the Community"]
+    [#html/element tagname: "ul" | children:
+      [#html/element tagname: "li" | children: [#ui/a href: "http://blog.witheve.com" text: "Development Diary"]]
+      [#html/element tagname: "li" | children: [#ui/a href: "https://github.com/witheve/rfcs" text: "Request for Comments"]]
+      [#html/element tagname: "li" | children: [#ui/a href: "https://groups.google.com/forum/#!forum/eve-talk" text: "Mailing List"]]
+      [#html/element tagname: "li" | children: [#ui/a href: "https://twitter.com/with_eve" text: "Twitter"]]]]
 ```
 
 ## Events
