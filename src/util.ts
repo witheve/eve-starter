@@ -35,5 +35,5 @@ export function findWatchers(watcherPaths:string[], relative = false) {
 }
 
 export function escapeSingleQuotes(str:string) {
-  return str.replace("'", "\\'");
+  return str.replace(/'/gm, "\\'");
 }
