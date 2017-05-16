@@ -29,11 +29,11 @@ prog.attach("svg");
 prog.bind("draw a clock", ({find, record}) => {
   let timer = find("clock-timer");
   return [
-    record("svg", {viewBox: "0 0 100 100", width: "300px", timer}).add("children", [
-      record("svg/circle", {cx:50, cy:50, r:45, fill:"#0b79ce"}),
-      record("clock-hand", "hour-hand", {timer, length:30, stroke:"black"}).add("degrees", 30 * timer.hours),
-      record("clock-hand", "minute-hand", {timer, length:40, stroke:"black"}).add("degrees", 6 * timer.minutes),
-      record("clock-hand", "second-hand", {timer, length:40, stroke:"red"}).add("degrees", 6 * timer.seconds),
+    record("svg/root", {viewBox: "0 0 100 100", width: "300px", timer}).add("children", [
+      record("svg/circle", {sort: 1, cx:50, cy:50, r:45, fill:"#0b79ce"}),
+      record("clock-hand", "hour-hand", {sort: 2, timer, length:30, stroke:"black"}).add("degrees", 30 * timer.hours),
+      record("clock-hand", "minute-hand", {sort: 3, timer, length:40, stroke:"black"}).add("degrees", 6 * timer.minutes),
+      record("clock-hand", "second-hand", {sort: 4, timer, length:40, stroke:"red"}).add("degrees", 6 * timer.seconds),
     ])
   ]
 })
@@ -53,18 +53,18 @@ prog.bind("draw clock hands", ({find, lib}) => {
 })
 
 prog
-  .bind("Translate elements into svg", ({find, record, union}) => {
-    let elem = find("svg");
-    return [elem.add("tag", "svg/element").add("tagname", "svg")];
-  })
-  .bind("Translate elements into svg", ({find, record, union}) => {
-    let elem = find("svg/circle");
-    return [elem.add("tag", "svg/element").add("tagname", "circle")];
-  })
-  .bind("Translate elements into svg", ({find, record, union}) => {
-    let elem = find("svg/line");
-    return [elem.add("tag", "svg/element").add("tagname", "line")];
-  });
+  // .bind("Translate elements into svg", ({find, record, union}) => {
+  //   let elem = find("svg");
+  //   return [elem.add("tag", "svg/element").add("tagname", "svg")];
+  // })
+  // .bind("Translate elements into svg", ({find, record, union}) => {
+  //   let elem = find("svg/circle");
+  //   return [elem.add("tag", "svg/element").add("tagname", "circle")];
+  // })
+  // .bind("Translate elements into svg", ({find, record, union}) => {
+  //   let elem = find("svg/line");
+  //   return [elem.add("tag", "svg/element").add("tagname", "line")];
+  // });
 
 prog.test(1, [
   [1, "tag", "clock-timer"],

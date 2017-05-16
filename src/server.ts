@@ -77,6 +77,7 @@ export class Server {
       prog.attach("system");
       prog.attach("ui");
       prog.attach("html");
+      prog.attach("svg");
       prog.attach("compiler");
       prog.inputEAVs(results.results.eavs);
     `;

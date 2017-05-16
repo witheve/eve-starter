@@ -31,7 +31,7 @@ prog.commit("draw the game world", ({find, record}) => {
     world.add("tag", "html/div")
          .add("style", record("html/style", {"user-select":"none"}))
          .add("children", [
-           record("svg", "game-window", {viewBox: "10 0 80 100", width:480}).add("children", [
+           record("svg/root", "game-window", {viewBox: "10 0 80 100", width:480}).add("children", [
              record("svg/rect", {x:0, y:0, width:100, height:53, fill:"rgb(112,197,206)", sort:0}),
              record("svg/rect", {x:0, y:95, width:100, height:5, fill:"rgb(222,216,149)", sort:0}),
              record("svg/image", {x:0, y:52, width:100, height:43, sort:1,preserveAspectRatio:"xMinYMin slice", href:"https://cdn.rawgit.com/bhauman/flappy-bird-demo/master/resources/public/imgs/background.png"}),
@@ -130,7 +130,7 @@ prog.bind("draw obstacles", ({find, record}) => {
   let imgs = "https://cdn.rawgit.com/bhauman/flappy-bird-demo/master/resources/public/imgs";
   return [
     svg.add("children", [
-      record("svg", "obs-spr", {obstacle, sort:2, overflow:"visible"}).add("children", [
+      record("svg/element", "obs-spr", {tagname: "svg", obstacle, sort:2, overflow:"visible"}).add("children", [
         record("svg/image", {x:0, y:0, width:10, height, preserveAspectRatio:"none", href:`${imgs}/pillar-bkg.png`, sort:1}),
         record("svg/image", {x:-1, y:height - 5, width:12, height:5, preserveAspectRatio:"none", href:`${imgs}/lower-pillar-head.png`, sort:2}),
         record("svg/image", {x:0, y:bottomHeight, width:10, height:90 - bottomHeight, preserveAspectRatio:"none", href:`${imgs}/pillar-bkg.png`, sort:1}),
@@ -237,24 +237,6 @@ prog
     let elem = find("html/div");
     return [elem.add("tag", "html/element").add("tagname", "div")];
   })
-
-prog
-  .bind("Translate elements into svg", ({find, record, union}) => {
-    let elem = find("svg");
-    return [elem.add("tag", "svg/element").add("tagname", "svg")];
-  })
-  .bind("Translate elements into svg", ({find, record, union}) => {
-    let elem = find("svg/rect");
-    return [elem.add("tag", "svg/element").add("tagname", "rect")];
-  })
-  .bind("Translate elements into svg", ({find, record, union}) => {
-    let elem = find("svg/text");
-    return [elem.add("tag", "svg/element").add("tagname", "text")];
-  })
-  .bind("Translate elements into svg", ({find, record, union}) => {
-    let elem = find("svg/image");
-    return [elem.add("tag", "svg/element").add("tagname", "image")];
-  });
 
 //--------------------------------------------------------------------
 // Go!
