@@ -63,34 +63,52 @@ where `N` is the size of the board.
 A game is won when a player marks N cells in a row, column, or diagonal.
 The game can end in a tie, where no player has N in a row.
 
+@FIXME: This is broken currently, apparently due to the win condition checking happening within a choose.
+
+//~~~
+search
+  board = [#board size: N, not(winner)]
+  cell = [#cell]
+  winner =
+    // Check for a winning row
+    if cell = [#cell row player]
+       N = gather/count[for: cell per: (row, player)]
+    then player
+    // Check for a winning column
+    else if cell = [#cell column player]
+            N = gather/count[for: cell per: (column, player)]
+    then player
+    // Check for a diagonal win
+    else if cell = [#diagonal row column player]
+            N = gather/count[for: cell per: player]
+    then player
+    // Check for an anti-diagonal win
+    else if cell = [#anti-diagonal row column player]
+            N = gather/count[for: cell per: player]
+    then player
+    // If all cells are filled but there are no winners
+    else if cell = [#cell player]
+            N * N = gather/count[for: cell]
+    then "nobody"
+
+commit
+  board.winner := winner
+  cell += #winner
+//~~~
+
+@DEBUG: Single win condition check for rows to test.
+
 ~~~
 search
   board = [#board size: N, not(winner)]
 
-  (winner, cell) =
-    // Check for a winning row
-    if cell = [#cell row player]
-       N = gather/count[for: cell per: (row, player)]
-    then (player, cell)
-    // Check for a winning column
-    else if cell = [#cell column player]
-            N = gather/count[for: cell per: (column, player)]
-    then (player, cell)
-    // Check for a diagonal win
-    else if cell = [#diagonal row column player]
-            N = gather/count[for: cell per: player]
-    then (player, cell)
-    // Check for an anti-diagonal win
-    else if cell = [#anti-diagonal row column player]
-            N = gather/count[for: cell per: player]
-    then (player, cell)
-    // If all cells are filled but there are no winners
-    else if cell = [#cell player]
-            N * N = gather/count[for: cell]
-    then ("nobody", cell)
+  // Check for a winning row
+  cell = [#cell row player]
+  N = gather/count[for: cell per: (player, row)]
 
 commit
-  board.winner := winner
+  [#ui/div text: "WON"]
+  board.winner := player
   cell += #winner
 ~~~
 
@@ -144,13 +162,13 @@ A reset consists of:
 
 ~~~
 search
-  [#html/event/click element: [#div board]]
+  [#html/event/click element: [#ui/div board]]
   board = [#board winner]
   cell = [#cell player]
 
 commit
-  board.winner -= winner
-  cell.player -= player
+  board.winner := none
+  cell.player := none
   cell -= #winner
 ~~~
 
@@ -165,23 +183,23 @@ search
   board = [#board]
   cell = [#cell board row column]
   contents = if cell.player then cell.player
-                     else ""
+             else ""
 
 bind
     [#ui/div board #container | style: [font-family: "sans-serif"] children:
         [#ui/div #status board class: "status" | style: [text-align: "center" width: "150px" height: "50px" padding-bottom: "10px"]]
         [#ui/div board class: "board" | style: [color: "black"] children:
             [#ui/div board class: "row" sort: row, | children:
-                [#ui/div #cell cell class: "cell" text: contents sort: column |
-         style: [display: "inline-block" width: "50px" height: "50px" border: "1px solid black" background: "white" font-size: "2em" line-height: "50px" text-align: "center" vertical-align: "top"]]]]]
+                [#ui/div #cell-div cell class: "cell" sort: column text: contents |
+         style: [cell display: "inline-block" width: "50px" height: "50px" border: "1px solid black" background: "white" font-size: "2em" line-height: "50px" text-align: "center" vertical-align: "top"]]]]]
 ~~~
 
 Winning cells are drawn in a different color
 
 ~~~
 search
-  winning-cells = [#cell #winner]
-  cell-elements = [#ui/div cell: winning-cells style]
+  winning-cell = [#cell #winner]
+  cell-elements = [#ui/div cell: winning-cell style]
 
 bind
   style.color := "blue"
