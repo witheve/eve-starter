@@ -73,8 +73,9 @@ search
   winner =
     if N = gather/count[for: cell per: (row, player)] then player
     else if N = gather/count[for: cell per: (column, player)] then player
-    else if N = gather/count[for: cell per: player] then player
-    else if cell = [#anti-diagonal]
+    else if cell = [#diagonal row column player]
+            N = gather/count[for: cell per: player] then player
+    else if cell = [#anti-diagonal row column player]
             N = gather/count[for: cell per: player]
             then player
     else if N * N = gather/count[for: cell] then "nobody" // Cat's game!
