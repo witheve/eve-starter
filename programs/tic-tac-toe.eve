@@ -65,50 +65,22 @@ The game can end in a tie, where no player has N in a row.
 
 @FIXME: This is broken currently, apparently due to the win condition checking happening within a choose.
 
-//~~~
-search
-  board = [#board size: N, not(winner)]
-  cell = [#cell]
-  winner =
-    // Check for a winning row
-    if cell = [#cell row player]
-       N = gather/count[for: cell per: (row, player)]
-    then player
-    // Check for a winning column
-    else if cell = [#cell column player]
-            N = gather/count[for: cell per: (column, player)]
-    then player
-    // Check for a diagonal win
-    else if cell = [#diagonal row column player]
-            N = gather/count[for: cell per: player]
-    then player
-    // Check for an anti-diagonal win
-    else if cell = [#anti-diagonal row column player]
-            N = gather/count[for: cell per: player]
-    then player
-    // If all cells are filled but there are no winners
-    else if cell = [#cell player]
-            N * N = gather/count[for: cell]
-    then "nobody"
-
-commit
-  board.winner := winner
-  cell += #winner
-//~~~
-
-@DEBUG: Single win condition check for rows to test.
-
 ~~~
 search
   board = [#board size: N, not(winner)]
+  cell = [#cell row column player]
 
-  // Check for a winning row
-  cell = [#cell row player]
-  N = gather/count[for: cell per: (player, row)]
+  winner =
+    if N = gather/count[for: cell per: (row, player)] then player
+    else if N = gather/count[for: cell per: (column, player)] then player
+    else if N = gather/count[for: cell per: player] then player
+    else if cell = [#anti-diagonal]
+            N = gather/count[for: cell per: player]
+            then player
+    else if N * N = gather/count[for: cell] then "nobody" // Cat's game!
 
 commit
-  [#ui/div text: "WON"]
-  board.winner := player
+  board.winner := winner
   cell += #winner
 ~~~
 
