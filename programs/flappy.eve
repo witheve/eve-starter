@@ -74,7 +74,7 @@ search
   world = [#world distance]
 
 bind
-  world.score := math/floor[a: distance]
+  world.score := math/floor[value: distance]
 ~~~
 
 ### Start a new game
@@ -233,7 +233,7 @@ search
   world = [#world screen: "game"]
   [#player x y]
   [#obstacle x: obstacle-x height gap]
-  ∂x = math/abs[a: obstacle-x + 5 - x] - 10 // distance between the edges of player and obstacle (offset of 1/2 obstacle width because origin is on the left)
+  ∂x = math/absolute[value: obstacle-x + 5 - x] - 10 // distance between the edges of player and obstacle (offset of 1/2 obstacle width because origin is on the left)
   ∂x < 0
   collision = if y - 5 <= height then true
               else if y + 5 >= gap + height then true
