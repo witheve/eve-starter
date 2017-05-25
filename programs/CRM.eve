@@ -224,7 +224,7 @@ search
   message-count = gather/count[for: thread.messages, per: thread.users]
 
 bind
-  content.children := [#ui/div thread class: "thread" | children:
+  content.children := [#ui/div thread class: "thread-container" | children:
     [#ui/div #thread thread, class: "thread-box" | children:
       [#ui/img class: "msg-avatar" src: contacts.avatarURL]
       [#ui/div class: "msg-name" text: contacts.name]
@@ -271,7 +271,7 @@ search
   content = [#content]
   [#app page: [#more]]
 
-bind @browser
+bind
   content.children := [#ui/div #more class: "more" | children:
     [#ui/h2 text: "Learn more about Eve"]
     [#html/element tagname: "ul" | children:
