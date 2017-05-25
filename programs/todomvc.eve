@@ -97,10 +97,10 @@ search
 bind
   parent.children +=
     [#ui/li class: [todo: "true", completed, editing], todo sort: todo.number | children:
-            [#ui/input #todo-checkbox todo, type: "checkbox", checked: completed, class: [toggle: "true", hidden: editing]]
+            [#ui/input #todo-checkbox todo, type: "checkbox", checked: completed, class: "toggle" class: [hidden: editing]]
             [#html/element tagname: "label" #todo-item, class: [hidden: editing], todo, text: body]
-            [#ui/input #todo-editor, todo, value: body, autofocus: "true", class: [edit: "true", hidden: logic/toggle[value: editing]]]
-            [#ui/button #remove-todo, class: [destroy: "true", hidden: editing], todo]]
+            [#ui/input #todo-editor, todo, value: body, autofocus: "true", class: "edit" class: [hidden: logic/toggle[value: editing]]]
+            [#ui/button #remove-todo, class: "destroy" class: [hidden: editing], todo]]
 ~~~
 
 Thanks to Eve's set semantics, we don't need any loops here; for every unique `#todo` in the database, Eve will do the work of adding another `#li` as a child of `#todo-list`.
@@ -117,7 +117,7 @@ search
   kd = [#html/event/key-down element, key: "enter"]
 
   num = if other-todo = [#todo number]
-           1 = gather/sort[value: number for: other-todo direction: "down"]
+           1 = gather/sort[for: (number, other-todo) direction: "down"]
            then number + 1
         else 1
 
@@ -211,4 +211,12 @@ search
 
 bind
   [#ui/div text: "{{url}} {{seg.index}}. '{{seg.value}}' ({{seg}})"]
+~~~
+
+~~~
+search
+ app = [#app filter]
+
+bind
+  [#ui/div text: "app '{{filter}}' ({{app}})"]
 ~~~
