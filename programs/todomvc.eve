@@ -117,7 +117,7 @@ search
   kd = [#html/event/key-down element, key: "enter"]
 
   num = if other-todo = [#todo number]
-           1 = gather/sort[value: number for: other-todo direction: "down"]
+           1 = gather/sort[for: (number, other-todo) direction: "down"]
            then number + 1
         else 1
 
