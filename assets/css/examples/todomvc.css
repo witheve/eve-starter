@@ -1,4 +1,4 @@
-.program {
+body {
     margin: 0 auto;
     padding: 0;
     font: 14px 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -184,7 +184,7 @@
     word-break: break-all;
     margin-left: 12px;
     padding: 8px 6px;
-    display: block;
+    display: inline-block;
     line-height: 1.2;
     transition: color 0.4s;
 }

@@ -21,9 +21,7 @@ In this block, we do a little work to determine todo-count, all-checked, and non
 
 ~~~
 search
-  [#app filter]
-
-  all-checked = if not([#todo completed: false]) then "true"
+  all-checked = if not([#todo completed: "false"]) then "true"
                 else "false"
 
   none-checked = if [#todo completed: true] then "false"
@@ -31,10 +29,6 @@ search
 
   todo-count = if c = gather/count[for: [#todo completed: "false"]] then c
                 else 0
-
-  (is_all, is_active, is_completed) = if filter = "all" then ("true", "false", "false")
-                                      if filter = "active" then ("false", "true", "false")
-                                      if filter = "completed" then ("false", "false", "true")
 
 bind
     // Links to an external stylesheet
@@ -48,18 +42,29 @@ bind
         [#ui/input #toggle-all class: "toggle-all", type: "checkbox",
                                           checked: all-checked]]
 
-    [#div class: "main" | children:
-        [#ui/ul #todo-list, class: "todo-list"]]
+    [#ui/div class: "main" | children:
+        [#ui/ul #todo-list]]
 
     [#html/element tagname: "footer" children:
         [#ui/span #todo-count, class: "todo-count" | children:
             [#html/element tagname: "strong" text: todo-count]
         [#ui/span text: " items left"]]
-        [#ui/ul #filters, class: "filters" | children:
-        [#ui/li children: [#ui/a href: "#/all", text: "all", class: [selected: is_all]]]
-        [#ui/li children: [#ui/a href: "#/active", text: "active", class: [selected: is_active]]]
-        [#ui/li children: [#ui/a href: "#/completed", text: "completed", class: [selected: is_completed]]]]
+        [#ui/ul #filter-list, class: "filters" | children:
+        [#filter-link filter: "all"]
+        [#filter-link filter: "active"]
+        [#filter-link filter: "completed"]]
         [#ui/span #clear-completed text: "Clear completed", class: [clear-completed: "true", hidden: none-checked]]]]
+~~~
+
+Now we'll fill in the details for our filter link component.
+
+~~~
+search
+  me = [#filter-link filter]
+  selected = if [#app filter] then "true" else "false"
+
+bind
+  me <- [#ui/li children: [#ui/a text: filter | href: "#/{{filter}}" class: [selected]]]
 ~~~
 
 ### Drawing the Todo List
@@ -78,21 +83,24 @@ search
 
   (todo, body, completed, editing) =
     if filter = "completed"
-        then ([#todo, body, completed: true, editing], body, true, editing)
+        found = [#todo completed: "true"]
+        then (found, found.body, "true", found.editing)
 
     else if filter = "active"
-        then ([#todo, body, completed: false, editing], body, false, editing)
+        found = [#todo completed: "false"]
+        then (found, found.body, "false", found.editing)
 
     else if filter = "all"
-        then ([#todo, body, completed, editing], body, completed, editing)
+        found = [#todo]
+        then (found, found.body, found.completed, found.editing)
 
 bind
   parent.children +=
-    [#ui/li class: [todo: true, completed, editing], todo | children:
-            [#ui/input #todo-checkbox todo, type: "checkbox", checked: completed, class: [toggle: true, hidden: editing]]
+    [#ui/li class: [todo: "true", completed, editing], todo sort: todo.number | children:
+            [#ui/input #todo-checkbox todo, type: "checkbox", checked: completed, class: [toggle: "true", hidden: editing]]
             [#html/element tagname: "label" #todo-item, class: [hidden: editing], todo, text: body]
-            [#ui/input #todo-editor, todo, value: body, autofocus: true, class: [edit: true, hidden: logic/toggle[value: editing]]]
-            [#ui/button #remove-todo, class: [destroy: true, hidden: editing], todo]]
+            [#ui/input #todo-editor, todo, value: body, autofocus: "true", class: [edit: "true", hidden: logic/toggle[value: editing]]]
+            [#ui/button #remove-todo, class: [destroy: "true", hidden: editing], todo]]
 ~~~
 
 Thanks to Eve's set semantics, we don't need any loops here; for every unique `#todo` in the database, Eve will do the work of adding another `#li` as a child of `#todo-list`.
@@ -108,12 +116,17 @@ search
   element = [#new-todo value]
   kd = [#html/event/key-down element, key: "enter"]
 
+  num = if other-todo = [#todo number]
+           1 = gather/sort[value: number for: other-todo direction: "down"]
+           then number + 1
+        else 1
+
 commit
-  [#todo body: value, editing: false, completed: false, kd]
+  [#todo number: num body: value, editing: "false", completed: "false", kd]
   element.value := ""
 ~~~
 
-Of note here is the record `[#todo body: value, editing: false, completed: false, kd]`. The inclusion of the `kd` attribute might seem strange, but its purpose is to guarantee the uniqueness of the todo. Let’s say we want to add two todos with the same body. If `kd` were not an attribute, then the two todos would be exactly the same and Eve’s set semantics would collapse them into a single todo. Therefore, we need some way to distinguish todos with identical bodies. Adding `kd` allows for this.
+Of note here is the record `[#todo body: value, editing: "false", completed: "false", kd]`. The inclusion of the `kd` attribute might seem strange, but its purpose is to guarantee the uniqueness of the todo. Let’s say we want to add two todos with the same body. If `kd` were not an attribute, then the two todos would be exactly the same and Eve’s set semantics would collapse them into a single todo. Therefore, we need some way to distinguish todos with identical bodies. Adding `kd` allows for this.
 
 ### Editing Todos
 
@@ -127,28 +140,31 @@ Here we handle all the ways we edit a todo. Editing includes changing the body a
 
 ~~~
 search
-  (todo, body, editing, completed) =
+  (found, body, editing, completed) =
     if [#html/event/click element: [#todo-checkbox todo]]
         then (todo, todo.body, todo.editing, logic/toggle[value: todo.completed])
 
     else if [#html/event/click element: [#toggle-all checked]]
-        then ([#todo body], body, todo.editing, logic/toggle[value: checked])
+        todo = [#todo]
+        then (todo, todo.body, todo.editing, logic/toggle[value: checked])
 
     else if [#html/event/double-click element: [#todo-item todo]]
-        then (todo, todo.body, true, todo.completed)
+        then (todo, todo.body, "true", todo.completed)
 
     else if [#html/event/blur element: [#todo-editor todo value]]
-        todo.editing = true
-        then (todo, value, false, todo.completed)
+        todo = [editing: "true"]
+        then (todo, value, "false", todo.completed)
 
     else if [#html/event/key-down element: [#todo-editor todo] key: "escape"]
-        then (todo, todo.body, false, todo.completed)
+        then (todo, todo.body, "false", todo.completed)
 
     else if [#html/event/key-down element: [#todo-editor todo value] key: "enter"]
-        then (todo, value, false, todo.completed)
+        then (todo, value, "false", todo.completed)
 
 commit
-  todo <- [body, completed, editing]
+  found.body := body
+  found.completed := completed
+  found.editing := editing
 ~~~
 
 ### Deleting Todos
@@ -160,7 +176,7 @@ search
   todo = if [#html/event/click element: [#remove-todo todo]]
             then todo
          else if [#html/event/click element: [#clear-completed]]
-            then [#todo completed: true]
+            then [#todo completed: "true"]
 
 commit
   todo := none
@@ -178,12 +194,21 @@ We can extract this value using `#url`, which has a hash-segment attribute that 
 
 ~~~
 search
-  value = if [#url hash-segment: [index: 1, value]]
-            then value
-          else "all"
+  filter = if [#html/url hash-segment: [index: 2, value]]
+           then value
+           else "all"
 
 bind
-  [#app filter: value]
+  [#app | filter]
 ~~~
 
 [1]: http://todomvc.com/
+
+~~~
+search
+ url =  [#html/url]
+ seg = url.hash-segment
+
+bind
+  [#ui/div text: "{{url}} {{seg.index}}. '{{seg.value}}' ({{seg}})"]
+~~~
