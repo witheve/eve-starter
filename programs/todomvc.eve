@@ -173,13 +173,13 @@ We remove a todo from the list by setting the todo's record to special `none` va
 
 ~~~
 search
-  todo = if [#html/event/click element: [#remove-todo todo]]
+  deleted-todo = if [#html/event/click element: [#remove-todo todo]]
             then todo
          else if [#html/event/click element: [#clear-completed]]
             then [#todo completed: "true"]
 
 commit
-  todo := none
+  deleted-todo := none
 ~~~
 
 ### Filtering Todos (Routing)
