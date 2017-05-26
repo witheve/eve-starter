@@ -97,10 +97,10 @@ search
 bind
   parent.children +=
     [#ui/li class: [todo: "true", completed, editing], todo sort: todo.number | children:
-            [#ui/input #todo-checkbox todo, type: "checkbox", checked: completed, class: [toggle: "true", hidden: editing]]
+            [#ui/input #todo-checkbox todo, type: "checkbox", checked: completed, class: "toggle" class: [hidden: editing]]
             [#html/element tagname: "label" #todo-item, class: [hidden: editing], todo, text: body]
-            [#ui/input #todo-editor, todo, value: body, autofocus: "true", class: [edit: "true", hidden: logic/toggle[value: editing]]]
-            [#ui/button #remove-todo, class: [destroy: "true", hidden: editing], todo]]
+            [#ui/input #todo-editor todo, value: body, autofocus: "true", class: "edit" class: [hidden: logic/toggle[value: editing]]]
+            [#ui/button #remove-todo todo, class: "destroy" class: [hidden: editing]]]
 ~~~
 
 Thanks to Eve's set semantics, we don't need any loops here; for every unique `#todo` in the database, Eve will do the work of adding another `#li` as a child of `#todo-list`.
@@ -194,7 +194,8 @@ We can extract this value using `#url`, which has a hash-segment attribute that 
 
 ~~~
 search
-  filter = if [#html/url hash-segment: [index: 2, value]]
+  url = [#html/url]
+  filter = if url.hash-segment = [index: 2, value]
            then value
            else "all"
 
@@ -203,12 +204,3 @@ bind
 ~~~
 
 [1]: http://todomvc.com/
-
-~~~
-search
- url =  [#html/url]
- seg = url.hash-segment
-
-bind
-  [#ui/div text: "{{url}} {{seg.index}}. '{{seg.value}}' ({{seg}})"]
-~~~
