@@ -79,7 +79,7 @@ search
 
 bind
   [#ui/link rel: "stylesheet" href: "/assets/css/examples/crm.css"]
-  [#ui/div #container class: "container" | children:
+  [#ui/div #container | children:
     [#ui/div #main-scroll class: "scroll" | children:
       [#ui/div class: "banner"]
       [#ui/div current-contact class: "bio-info" | children:
@@ -90,17 +90,17 @@ bind
         [#ui/div class: "info" text: "{{time-string}}, {{current-contact.location}}"]]
       [#ui/div #content class: "content"]]
     [#ui/div class: "navigation" | children:
-      [#ui/div #about #nav class: "nav-button middle", | children:
+      [#ui/div #nav page: "about" class: "nav-button middle", | children:
         [#ui/div class: "icon ion-person"]
         [#ui/div class: "label" text: "profile"]]
-      [#ui/div #threads #nav class: "nav-button middle", | children:
+      [#ui/div #nav page: "threads" class: "nav-button middle", | children:
         [#ui/div class: "icon ion-chatboxes"]
         [#ui/div class: "bubble" text: threads]
         [#ui/div class: "label" text: "messages"]]
-      [#ui/div #contacts #nav class: "nav-button middle" | children:
+      [#ui/div #nav page: "contacts" class: "nav-button middle" | children:
         [#ui/div class: "icon ion-person-stalker" text: ""]
         [#ui/div class: "label" text: "contacts"]]
-      [#ui/div #more #nav class: "nav-button" | children:
+      [#ui/div #nav page: "more" class: "nav-button" | children:
         [#ui/div class: "icon ion-android-more-horizontal" text: ""]
         [#ui/div class: "label" text: "more"]]]]
 ```
@@ -170,7 +170,7 @@ search
 bind
   recent-div.children += [#ui/div recent-div | children:
     [#ui/h3 text: "Recent Contacts (0)"]
-    [#ui/div #contacts #nav recent-div | children:
+    [#ui/div #nav page: "contacts" recent-div | children:
       [#ui/div class: "plus" text: "+"]
       [#ui/div text: "Start a Thread"]]]
 ```
@@ -241,7 +241,7 @@ search
   not(threads = [#thread users: user, messages])
 
 bind
-  content.children := [#ui/div #contacts #nav class: "button", text: "Start a Thread"]
+  content.children := [#ui/div #nav page: "contacts" class: "button", text: "Start a Thread"]
 ```
 
 ### Contacts Page
@@ -294,12 +294,11 @@ When the user clicks on a `#nav` button, set the app page to that element. We us
 
 ```
 search
-  [#html/event/click element]
-  element = [#nav]
+  [#html/event/click element: [#nav page]]
   app = [#app user]
 
 commit
-  app.page := [tag: element.tag]
+  app.page := [tag: page]
   app.contact := none
 ```
 
