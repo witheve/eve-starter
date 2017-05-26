@@ -4,28 +4,6 @@ let prog = new Program("clock");
 prog.attach("system");
 prog.attach("svg");
 
-// ~~~
-// search @browser
-//   hand = [#clock-hand degrees length]
-//   x2 = 50 + (length * sin[degrees])
-//   y2 = 50 - (length * cos[degrees])
-// bind @browser
-//   hand <- [#line, x1: 50, y1: 50, x2, y2]
-// ~~~
-
-// Draw a clock using SVG. We find the angle for each hand using time and let the `#clock-hand` block take care of the rest.
-
-// ~~~
-// search
-//   [#time hours minutes seconds]
-// bind @browser
-//   [#svg viewBox: "0 0 100 100", width: "300px", children:
-//     [#circle cx: 50, cy: 50, r: 45, fill: "#0B79CE"]
-//     [#clock-hand #hour-hand degrees: 30 * hours, length: 30, stroke: "#023963"]
-//     [#clock-hand #minute-hand degrees: 6 * minutes, length: 40, stroke: "#023963"]
-//     [#clock-hand #second-hand degrees: 6 * seconds, length: 40, stroke: "#ce0b46"]]
-// ~~~
-
 prog.bind("draw a clock", ({find, record}) => {
   let timer = find("clock-timer");
   return [
@@ -52,35 +30,8 @@ prog.bind("draw clock hands", ({find, lib}) => {
   ]
 })
 
-prog
-  // .bind("Translate elements into svg", ({find, record, union}) => {
-  //   let elem = find("svg");
-  //   return [elem.add("tag", "svg/element").add("tagname", "svg")];
-  // })
-  // .bind("Translate elements into svg", ({find, record, union}) => {
-  //   let elem = find("svg/circle");
-  //   return [elem.add("tag", "svg/element").add("tagname", "circle")];
-  // })
-  // .bind("Translate elements into svg", ({find, record, union}) => {
-  //   let elem = find("svg/line");
-  //   return [elem.add("tag", "svg/element").add("tagname", "line")];
-  // });
-
-prog.test(1, [
+prog.inputEAVs([
   [1, "tag", "clock-timer"],
   [1, "tag", "system/timer"],
   [1, "resolution", 1000],
-  // [1, "hours", 10],
-  // [1, "minutes", 10],
-  // [1, "seconds", 10],
-])
-
-// prog.test(2, [
-//   [1, "seconds", 10, 0, -1],
-//   [1, "seconds", 11],
-// ])
-
-// prog.test(3, [
-//   [1, "seconds", 11, 0, -1],
-//   [1, "seconds", 12],
-// ])
+]);
