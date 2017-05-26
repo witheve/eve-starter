@@ -184,7 +184,7 @@ body {
     word-break: break-all;
     margin-left: 12px;
     padding: 8px 6px;
-    display: inline-block;
+    display: block;
     line-height: 1.2;
     transition: color 0.4s;
 }
