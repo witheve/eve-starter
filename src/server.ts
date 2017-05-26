@@ -70,7 +70,7 @@ export class Server {
     // FIXME: we probably need to do better escaping in here.
     let mod = `
       var eve = require("witheve");
-      var doc = '${escapeSingleQuotes(contents).replace(/\n/g, "\\n")}';
+      var doc = '${contents.replace(/\\/g, "\\\\").replace(/'/gm, "\\'").replace(/\n/g, "\\n")}';
       var results = eve.parseDoc(doc, '${escapeSingleQuotes(file)}');
 
       let prog = new eve.Program("tickets");
