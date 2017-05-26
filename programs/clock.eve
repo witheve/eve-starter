@@ -13,8 +13,8 @@ Draw an appropriately positioned line into `#clock-hand`s.
 ~~~
 search
   hand = [#clock-hand degrees length]
-  x2 = 50 + (length * math/sin[degrees: degrees])
-  y2 = 50 - (length * math/cos[degrees: degrees])
+  x2 = 50 + (length * math/sin[degrees])
+  y2 = 50 - (length * math/cos[degrees])
 
 bind
   hand <- [#svg/line, x1: 50, y1: 50, x2, y2]

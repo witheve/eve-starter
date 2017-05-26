@@ -31,7 +31,7 @@ prog.commit("draw the game world", ({find, record}) => {
     world.add("tag", "html/div")
          .add("style", record("html/style", {"user-select":"none"}))
          .add("children", [
-           record("svg/root", "game-window", {viewBox: "10 0 80 100", width:480}).add("children", [
+           record("svg/root", "game-window", {world, viewBox: "10 0 80 100", width:480}).add("children", [
              record("svg/rect", {x:0, y:0, width:100, height:53, fill:"rgb(112,197,206)", sort:0}),
              record("svg/rect", {x:0, y:95, width:100, height:5, fill:"rgb(222,216,149)", sort:0}),
              record("svg/image", {x:0, y:52, width:100, height:43, sort:1,preserveAspectRatio:"xMinYMin slice", href:"https://cdn.rawgit.com/bhauman/flappy-bird-demo/master/resources/public/imgs/background.png"}),
@@ -216,7 +216,7 @@ prog.commit("collide with obstacle", ({find, choose, lib: {math}}) => {
   let world = find("world", {screen: "game"});
   let player = find("player");
   let obstacle = find("obstacle");
-  let dx = math.abs(obstacle.x + 5 - player.x) - 10
+  let dx = math.absolute(obstacle.x + 5 - player.x) - 10
   dx < 0;
 
   choose(
