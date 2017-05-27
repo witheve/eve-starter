@@ -79,7 +79,7 @@ export class Conf implements Config {
 
 
 export var config = new Conf({
-  workspacePaths: {root: root + "/build/programs"},
+  workspacePaths: {root: root + "/build/programs", eveRoot: root + "/programs"},
   watcherPaths: [root + "/build/watchers", posixify(path.join(root, "node_modules/witheve", eve.watcherPath))]
 });
 export default config;

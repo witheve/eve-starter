@@ -33,3 +33,7 @@ export function findWatchers(watcherPaths:string[], relative = false) {
   }
   return watcherFiles;
 }
+
+export function escapeSingleQuotes(str:string) {
+  return str.replace(/'/gm, "\\'");
+}
