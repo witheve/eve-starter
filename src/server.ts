@@ -5,7 +5,7 @@ import * as http from "http";
 import * as glob from "glob";
 import open = require("open");
 import config from "./config";
-import {findWatchers, posixify} from "./util";
+import {findWatchers, posixify, escapeSingleQuotes} from "./util";
 
 interface ProcessError extends Error { errno?: string; }
 
@@ -46,6 +46,7 @@ export class Server {
     this.app.get("/", this.serveIndex);
     this.app.get("/app/:workspaceId/:programId", this.serveApp);
     this.app.get("/programs/:workspaceId/:programId", this.servePrograms);
+    this.app.get("/eve-programs/:workspaceId/:programId", this.serveEvePrograms);
 
     this.app.get("/watchers.js", this.serveWatchers);
 
@@ -57,12 +58,43 @@ export class Server {
     });
   }
 
+  serveEvePrograms:express.RequestHandler = (req, res, next) => {
+    let {workspaceId, programId} = req.params;
+    let workspacePath = config.workspacePaths[workspaceId];
+    if(!workspacePath) {
+      res.sendStatus(400);
+      return;
+    }
+    let file = workspacePath + "/" + programId;
+    let contents = fs.readFileSync(file).toString();
+    // FIXME: we probably need to do better escaping in here.
+    let mod = `
+      var eve = require("witheve");
+      var doc = '${contents.replace(/\r/g, "").replace(/\\/g, "\\\\").replace(/'/gm, "\\'").replace(/\n/g, "\\n")}';
+      var results = eve.parseDoc(doc, '${escapeSingleQuotes(file)}');
+
+      let prog = new eve.Program("tickets");
+      prog.attach("system");
+      prog.attach("ui");
+      prog.attach("html");
+      prog.attach("svg");
+      prog.attach("compiler");
+      prog.inputEAVs(results.results.eavs);
+    `;
+    res.send(mod);
+  }
+
   // If the server is started with a file to run specified, serve that.
   // Otherwise, serve the program switcher app.
   serveIndex:express.RequestHandler = (req, res, next) => {
     let bootstrap = "";
     if(config.file) {
-      bootstrap += `SystemJS.import("/programs/${config.file}");\n`;
+      let ext = path.extname(config.file);
+      if(ext === ".eve") {
+        bootstrap += `SystemJS.import("/eve-programs/${config.file}");\n`;
+      } else {
+        bootstrap += `SystemJS.import("/programs/${config.file}");\n`;
+      }
     } else {
       let programs = this.getProgramUrls();
       bootstrap += `__config.programs = ${JSON.stringify(programs)};\n`;
@@ -79,7 +111,11 @@ export class Server {
     }
     let {workspaceId, programId} = req.params;
     let file = workspaceId + "/" + programId;
+    let ext = path.extname(programId);
     let bootstrap = `SystemJS.import("/programs/${file}");\n`;
+    if(ext === ".eve") {
+      bootstrap = `SystemJS.import("/eve-programs/${file}");\n`;
+    }
     this.sendApp(bootstrap, res);
   }
 
@@ -124,6 +160,9 @@ export class Server {
     for(let workspaceId in workspacePaths) {
       let workspacePath = workspacePaths[workspaceId];
       for(let filepath of glob.sync(workspacePath + "/*.js")) {
+        programFiles.push(workspaceId + "/" + path.relative(workspacePath, filepath));
+      }
+      for(let filepath of glob.sync(workspacePath + "/*.eve")) {
         programFiles.push(workspaceId + "/" + path.relative(workspacePath, filepath));
       }
     }
