@@ -71,7 +71,7 @@ if(program.args.length) {
   config.file = "file/" + path.basename(file);
 }
 
-console.info("For a complete list of Eve's configuration options, run `eve --help`");
+console.info("For a complete list of Eve's configuration options, run `npm start -- --help`");
 
 if(opts["listFound"]) {
   console.info("Found programs:");
