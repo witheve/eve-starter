@@ -73,7 +73,7 @@ export class Server {
       var doc = '${contents.replace(/\r/g, "").replace(/\\/g, "\\\\").replace(/'/gm, "\\'").replace(/\n/g, "\\n")}';
       var results = eve.parseDoc(doc, '${escapeSingleQuotes(file)}');
 
-      let prog = new eve.Program("tickets");
+      let prog = new eve.Program('${escapeSingleQuotes(file)}');
       prog.attach("system");
       prog.attach("canvas");
       prog.attach("ui");
