@@ -3,7 +3,7 @@ import {Program, appendAsEAVs, RawEAV} from "witheve";
 /* # Program Switcher
  *
  * The program switcher is a simple example of I/O between Eve and your existing JS program.
- * The server supplies a list of valid program urls attached to the window as \`__config.programs\`.
+ * The server supplies a list of valid program urls attached to the window as `__config.programs`.
  * We insert these into Eve and, when one is clicked, a watcher redirects the browser to that location.
  * Obviously this can be done using anchor tags, but that doesn't make for a very interesting demo. ;)
  *
