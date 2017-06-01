@@ -47,11 +47,15 @@ prog.bind("Demo button.", ({record}) => {
   return [
     record("container", {sort: 3, example}).add("children", [
       record("ui/column", {sort: 2, example, style: record({flex: 1, "justify-content": "space-around"})}).add("children", [
+        record("ui/row", {sort: 1, example, kind: "default"}).add("children", [
+          record("ui/button", {sort: 1, text: "default", style: record({flex: 1})}),
+          record("ui/button", {sort: 2, icon: "alert-circled"}),
+        ]),
+
         record("ui/row", {sort: 1, example, kind: "inset"}).add("children", [
           record("ui/button", {sort: 1, class: "inset", text: "inset", style: record({flex: 1})}),
           record("ui/button", {sort: 2, class: "inset", icon: "alert-circled"}),
         ]),
-        record("ui/button", {sort: 2, class: "inset", text: "inset", icon: "alert-circled"}),
 
         record("ui/row", {sort: 3, example, kind: "flat"}).add("children", [
           record("ui/button", {sort: 1, class: "flat", text: "flat", style: record({flex: 1})}),
