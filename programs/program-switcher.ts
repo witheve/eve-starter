@@ -77,7 +77,7 @@ prog
     return [
       container.add("children", [
         record("ui/text", {sort: 0, class: "header", text: "Select a program"}),
-        record("program-button", "ui/button", {sort: program.url, program, text: program.url})
+        record("program-button", "ui/a", {sort: program.url, program, text: program.url})
       ])
     ];
   })
