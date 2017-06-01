@@ -75,6 +75,7 @@ export class Server {
 
       let prog = new eve.Program("tickets");
       prog.attach("system");
+      prog.attach("canvas");
       prog.attach("ui");
       prog.attach("html");
       prog.attach("svg");
