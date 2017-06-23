@@ -8,7 +8,7 @@ The Eve Starter is designed to help you hit the ground running with Eve. It incl
 
 If you're an experienced Eve user looking to include it in your existing app, you can find the runtime at [witheve/eve](https://github.com/witheve/eve).
 
-## Install the Eve v0.3 Starter Preview
+## Install the Eve v0.3 Preview Starter
 
 First install [Node](https://nodejs.org/en/download/) for your platform.
 
