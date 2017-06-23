@@ -156,12 +156,12 @@ prog.bind("every 2 distance, a wild obstacle appears", ({find, lib: {math}}) => 
 
 // @TODO: What's the deal with airline food?
 prog.commit("adjust the height of the gap", ({find, lib: {math, random}}) => {
-  let {frame} = find("frames");
+  let {tick} = find("frames");
   let world = find("world", {screen: "game"});
-  frame != world.frame;
+  tick != world.frame;
   let obstacle = find("obstacle");
   obstacle.x > 90;
-  let height = random.number(frame) * 30 + 5;
+  let height = random.number(tick) * 30 + 5;
   return [obstacle.remove('height').add("height", height)];
 })
 
@@ -183,14 +183,14 @@ prog.commit("apply a velocity when you click", ({find}) => {
 //--------------------------------------------------------------------
 
 prog.commit("scroll the world", ({find, not}) => {
-  let {frame} = find("frames");
+  let {tick} = find("frames");
   let world = find("world", {screen:"game"});
-  frame != world.frame
+  tick != world.frame
   let player = find("player");
   let adjust = 1 / 30;
 
   return [
-    world.remove("frame").add("frame", frame)
+    world.remove("frame").add("frame", tick)
          .remove("distance").add("distance", world.distance + adjust),
     player.remove("y").add("y", player.y - player.velocity)
           .remove("velocity").add("velocity", player.velocity + world.gravity)
