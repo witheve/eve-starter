@@ -24,7 +24,7 @@ Draw a clock using SVG. We find the angle for each hand using time and let the `
 
 ~~~
 search
-  [#time hours minutes seconds]
+  [#time hour minute second]
 
 bind
   [#svg/root viewBox: "0 0 100 100", width: "300px", children:
