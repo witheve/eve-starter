@@ -13,7 +13,7 @@ Add a flappy eve and a world for it to flap in:
 ~~~
 commit
   [#player #self name: "eve" x: 25 y: 50 velocity: 0]
-  [#world screen: "menu" frame: 0 distance: 0 best: 0 gravity: -0.061]
+  [#world screen: "menu" tick: 0 distance: 0 best: 0 gravity: -0.061]
   [#obstacle gap: 35 offset: 0]
   [#obstacle gap: 35 offset: -1]
 
@@ -168,10 +168,10 @@ Readjust the height of the gap every time the obstacle resets
 
 ~~~
 search
-  [#time frame]
-  [#world screen: "game" frame != frame]
+  [#time tick]
+  [#world screen: "game" tick != tick]
   obstacle = [#obstacle x > 98]
-  height = random/number[seed: frame] * 30 + 5
+  height = random/number[seed: tick] * 30 + 5
 
 commit
   obstacle.height := height
@@ -193,17 +193,17 @@ commit
 
 ### Scroll the world
 
-Next, we scroll the world in time with frame updates. Eve is currently locked to 60fps updates here, but this will probably be configurable in the future. Importantly, we only want to update the world state once per frame, so to ensure that we note the offset of the frame we last computed in `world.frame` and ensure we’re not recomputing for the same offset.
+Next, we scroll the world in time with tick updates. Eve is currently locked to 60fps updates here, but this will probably be configurable in the future. Importantly, we only want to update the world state once per tick, so to ensure that we note the offset of the tick we last computed in `world.tick` and ensure we’re not recomputing for the same offset.
 
 ~~~
 search
-  [#time frame]
-  world = [#world screen: "game" frame != frame gravity]
+  [#time tick]
+  world = [#world screen: "game" tick != tick gravity]
   player = [#player y velocity]
   not([#html/event/click])
 
 commit
-  world.frame := frame
+  world.tick := tick
   world.distance := world.distance + 1 / 60
   player.y := y - velocity
   player.velocity := velocity + gravity

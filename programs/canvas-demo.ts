@@ -119,18 +119,18 @@ prog.bind("Draw a canvas with a reusable path component.", ({find, record}) => {
 
 prog.commit("Create a record to keep track of where we're at in our animation.", ({record}) => {
   return [
-    record("animated-circle", {frame: 0, prev: 0})
+    record("animated-circle", {tick: 0, prev: 0})
   ]
 });
 
-prog.commit("When a container for an animated circle is hovered, allow its frame to update with the timer.", ({find}) => {
+prog.commit("When a container for an animated circle is hovered, allow its tick to update with the timer.", ({find}) => {
   let timer = find("animation-timer");
   let animated = find("animated-circle");
   // A container for this animated circle is hovered.
   find("html/element", "html/hovered", {class: "container", animated});
-  animated.frame != timer.frame;
+  animated.tick != timer.tick;
   return [
-    animated.remove("frame").add("frame", timer.frame)
+    animated.remove("tick").add("tick", timer.tick)
   ];
 })
 
@@ -138,7 +138,7 @@ prog.bind("Draw an animated pulsing ball.", ({find, lib:{math}, choose, record})
   let example = "Animated (hover me!)";
   //let timer = find("animation-timer");
   let animated = find("animated-circle");
-  let step = math.mod(animated.frame, 100);
+  let step = math.mod(animated.tick, 100);
   let [size] = choose(
     () => { step <= 50; return step; },
     () => 100 - step
