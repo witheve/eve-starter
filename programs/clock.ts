@@ -9,9 +9,9 @@ prog.bind("draw a clock", ({find, record}) => {
   return [
     record("svg/root", {viewBox: "0 0 100 100", width: "300px", timer}).add("children", [
       record("svg/circle", {sort: 1, cx:50, cy:50, r:45, fill:"#0b79ce"}),
-      record("clock-hand", "hour-hand", {sort: 2, timer, length:30, stroke:"black"}).add("degrees", 30 * timer.hours),
-      record("clock-hand", "minute-hand", {sort: 3, timer, length:40, stroke:"black"}).add("degrees", 6 * timer.minutes),
-      record("clock-hand", "second-hand", {sort: 4, timer, length:40, stroke:"red"}).add("degrees", 6 * timer.seconds),
+      record("clock-hand", "hour-hand", {sort: 2, timer, length:30, stroke:"black"}).add("degrees", 30 * timer.hour),
+      record("clock-hand", "minute-hand", {sort: 3, timer, length:40, stroke:"black"}).add("degrees", 6 * timer.minute),
+      record("clock-hand", "second-hand", {sort: 4, timer, length:40, stroke:"red"}).add("degrees", 6 * timer.second),
     ])
   ]
 })
