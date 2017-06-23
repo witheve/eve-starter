@@ -32,7 +32,7 @@ search
 commit
   app <- [#init user
           page: [#about contact: user]
-          start-time: [#start-time day month year hours minutes seconds ampm]]
+          start-time: [#start-time day month year hour minute second ampm]]
 ```
 
 ### Time Formatting
@@ -41,8 +41,8 @@ Whether the current time is AM or PM.
 
 ```
 search
-  time = [#time hours]
-  ampm = if hours < 12 then "AM"
+  time = [#time hour]
+  ampm = if hour < 12 then "AM"
          else "PM"
 
 bind
@@ -54,12 +54,12 @@ Format the current time into a human-friendly string for use throughout the app.
 ```
 search
   time = [#time hour minute ampm]
-  hr = if hours = 0 then "12"
-       if hours <= 12 then "{{hours}}"
-       else "{{hours - 12}}"
+  hr = if hour = 0 then "12"
+       if hour <= 12 then "{{hour}}"
+       else "{{hour - 12}}"
 
 bind
-  time.time-string := "{{hr}}:{{minutes}} {{ampm}}"
+  time.time-string := "{{hr}}:{{minute}} {{ampm}}"
 ```
 
 ### Main App
@@ -276,11 +276,11 @@ bind
     [#ui/h2 text: "Learn more about Eve"]
     [#html/element tagname: "ul" | children:
       [#html/element tagname: "li" | children: [#ui/a href: "http://witheve.com" text: "Homepage"]]
-      [#html/element tagname: "li" | children: [#ui/a href: "https://witheve.github.io/docs/tutorials/quickstart/" text: "Quick Start Tutorial"]]
+      [#html/element tagname: "li" | children: [#ui/a href: "http://docs.witheve.com/v0.3/tutorials/quickstart/" text: "Quick Start Tutorial"]]
       [#html/element tagname: "li" | children: [#ui/a href: "http://github.com/witheve" text: "GitHub Repository"]]]
     [#ui/h2 text: "Join the Community"]
     [#html/element tagname: "ul" | children:
-      [#html/element tagname: "li" | children: [#ui/a href: "http://blog.witheve.com" text: "Development Diary"]]
+      [#html/element tagname: "li" | children: [#ui/a href: "http://incidentalcomplexity.com/" text: "Development Diary"]]
       [#html/element tagname: "li" | children: [#ui/a href: "https://github.com/witheve/rfcs" text: "Request for Comments"]]
       [#html/element tagname: "li" | children: [#ui/a href: "https://groups.google.com/forum/#!forum/eve-talk" text: "Mailing List"]]
       [#html/element tagname: "li" | children: [#ui/a href: "https://twitter.com/with_eve" text: "Twitter"]]]]
