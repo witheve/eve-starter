@@ -8,23 +8,41 @@ The Eve Starter is designed to help you hit the ground running with Eve. It incl
 
 If you're an experienced Eve user looking to include it in your existing app, you can find the runtime at [witheve/eve](https://github.com/witheve/eve).
 
-## Getting Started with Eve v0.3 preview
+## Install the Eve v0.3 Starter Preview
 
-Install [Node](https://nodejs.org/en/download/) for your platform, then clone and build the Eve starter repository:
+First install [Node](https://nodejs.org/en/download/) for your platform.
+
+Then, clone and build the Eve starter repository:
 
 ```sh
 git clone git@github.com:witheve/eve-starter.git
+```
+
+To run the latest stable version:
+
+```sh
 cd eve-starter
+git checkout release
 npm install
 ```
 
-You can start the program switcher, which allows you to browse included example programs:
+To run the latest nightly version:
+
+```sh
+cd eve-starter
+git checkout master
+npm install
+```
+
+## Using the Starter
+
+If you want to explore the bundled examples you can start the program switcher, which allows you to explore them from your browser. Any `*.eve` files places into the `eve-starter/programs` directory will be shown here.
 
 ```sh
 npm start
 ```
 
-Or you can run a specific program by providing its path as an argument:
+Or you can run a specific `.eve` or `.js` program by providing its path as an argument:
 
 ```sh
 npm start -- path/to/program.js
