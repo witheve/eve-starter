@@ -135,7 +135,7 @@ if(opts["headless"]) {
   } else if(extension === "js") {
     require(filepath);
   } else {
-    console.error(`\nERROR: *.${extension} files are unsupported. Supported types are *.js, *.ts, and *.eve`);
+    console.error(`\nERROR: *.${extension} files are unsupported. Supported types are *.js and *.eve`);
     process.exit(1);
   }
 
