@@ -116,10 +116,13 @@ if(opts["headless"]) {
     console.info("running an eve file");
     fs.readFile(filepath, {encoding: 'utf-8'}, function(err,data){
       if (!err) {
-        console.info('received data: ' + data);
-        let prog = new Program("Headless Eve Program");
+        let prog = new Program(`${config.file}`);
         prog.attach("system");
+        prog.attach("canvas");
+        prog.attach("ui");
+        prog.attach("html");
         prog.attach("svg");
+        prog.attach("compiler");
         prog.load(data);
       } else {
         console.error(err);
