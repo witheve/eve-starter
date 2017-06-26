@@ -9,8 +9,6 @@ import config from "./config";
 import {findWatchers, findPrograms, posixify} from "./util";
 import {Server} from "./server";
 
-
-
 //------------------------------------------------------------------------------
 // CLI Setup
 //------------------------------------------------------------------------------
@@ -94,8 +92,15 @@ if(opts["headless"]) {
     program.outputHelp();
     console.error("\nERROR: Unable to run Eve headless unless you specify a program to run with `<file>`");
     process.exit(1);
+  } 
+  
+  let filepath = config.file!.replace("file", config.workspacePaths["file"]);
+  
+  if(!fs.existsSync(filepath)) {
+    console.error(`\nERROR: File "${filepath}" was not found.`);
+    process.exit(1);
   }
-
+  
   console.info(`Starting headless Eve instance...`);
   console.info("  Requiring watchers from include paths...");
 
@@ -103,9 +108,9 @@ if(opts["headless"]) {
     require(watcherFile);
   }
 
-  console.info("  Starting program...");
+  console.info(`  Starting program ${filepath}...`);
 
-  require(config.file!.replace("file", config.workspacePaths["file"]));
+  require(filepath);
 
 } else {
   let server = new Server();
