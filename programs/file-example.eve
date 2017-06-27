@@ -4,7 +4,7 @@ Read the contents of a file
 
 ~~~
 commit
-  [#file/read #my-file path: "../foo.txt"]
+  [#file/write path: "../foo2.txt" encoding: "utf-8" contents: "write a file hooray!"]
 ~~~
 
 ~~~
@@ -12,5 +12,5 @@ search
   [#my-file contents]
 
 commit
-  [#stdio/log  text: "contents"]
+  [#console/log  text: contents]
 ~~~
