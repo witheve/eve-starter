@@ -81,7 +81,11 @@ text { display: inline-block; white-space: pre-wrap; }
     100% { margin-top: 0; max-height: 80px; }
 }
 
-.notify-root { max-height: 160px; border-bottom: 1px solid rgba(0, 0, 0, 0.1); overflow-y: auto; }
+.notify-wrapper { position: relative; max-height: 165px; overflow-y: hidden; }
+.notify-wrapper:after {position: absolute; content: " "; display: "block"; left: 0; right: 0; top: 155px; height: 10px; box-shadow: inset 0 -5px 5px rgba(0, 0, 0, 0.1); }
+.notify-scroller { overflow-y: auto; max-height: 165px; overflow-y: auto; }
+.notify-root { border-bottom: 1px solid rgba(0, 0, 0, 0.1);  }
+
 .notify-notice-wrapper { flex: 0 0 auto; align-items: center; padding: 5px 30px; padding-right: 40px; animation: slide-down 0.3s 1; animation-timing-function: ease-in; overflow: hidden; }
 .notify-notice { align-items: center; }
 .notify-notice-wrapper + .notify-notice-wrapper { border-top: 1px solid rgba(0, 0, 0, 0.1); }
