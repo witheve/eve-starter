@@ -1,0 +1,16 @@
+# File watcher examples
+
+Read the contents of a file
+
+~~~
+commit
+  [#file/read #my-file path: "../foo.txt"]
+~~~
+
+~~~
+search
+  [#my-file contents]
+
+commit
+  [#stdio/log  text: "contents"]
+~~~
