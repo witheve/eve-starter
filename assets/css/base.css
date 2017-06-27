@@ -72,3 +72,22 @@ text { display: inline-block; white-space: pre-wrap; }
 .eve-compiler-error-message-line { font-size:20pt; color: #ff8c24; }
 .eve-compiler-error-message { color: #ff8c24; }
 .eve-compiler-error-content {padding: 5px; flex: 1;}
+
+/******************************************************************************\
+ * Notify
+\******************************************************************************/
+@keyframes slide-down {
+    0% { margin-top: -10px; max-height: 0; }
+    100% { margin-top: 0; max-height: 80px; }
+}
+
+.notify-root { max-height: 160px; border-bottom: 1px solid rgba(0, 0, 0, 0.1); overflow-y: auto; }
+.notify-notice-wrapper { flex: 0 0 auto; align-items: center; padding: 5px 30px; padding-right: 40px; animation: slide-down 0.3s 1; animation-timing-function: ease-in; overflow: hidden; }
+.notify-notice { align-items: center; }
+.notify-notice-wrapper + .notify-notice-wrapper { border-top: 1px solid rgba(0, 0, 0, 0.1); }
+.notify-notice-wrapper:before { margin-left: -30px; width: 30px; text-align: center; font-family: "Ionicons"; line-height: 1; }
+.notify-notice-wrapper[type="warning"] { background: rgba(255, 255, 0, 0.1); }
+.notify-notice-wrapper[type="warning"]:before {content: "\f100"; color: rgb(128, 128, 0); }
+.notify-notice-wrapper[type="error"] { background: rgba(255, 96, 96, 0.2); }
+.notify-notice-wrapper[type="error"]:before {content: "\f101"; color: rgb(255, 0, 0); }
+.notify-notice-wrapper .notify-dismiss { margin-right: -40px; width: 30px; margin-left: 10px; }
