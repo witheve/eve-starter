@@ -71,8 +71,8 @@ search
   else if cell = [#cell column player] N = gather/count[for: cell per: (column, player)] then (player, cell)
   else if cell = [#diagonal player] N = gather/count[for: cell per: player] then (player, cell)
   else if cell = [#anti-diagonal player] N = gather/count[for: cell per: player] then (player, cell)
-  //else if N * N = gather/count[for: [#cell player]] then ("nobody", "nothing") // Cat's game!
-  else if not([#cell not(player)]) then ("nobody", "nothing")
+  //else if N * N = gather/count[for: [#cell player]] then ("Nobody", "nothing") // Cat's game!
+  else if not([#cell not(player)]) then ("Nobody", "nothing")
 
 commit
   board.winner := winner
@@ -153,8 +153,8 @@ search
              else ""
 
 bind
-    [#ui/div board #container | style: [font-family: "sans-serif"] children:
-        [#ui/div #status board class: "status" | style: [text-align: "center" width: "150px" height: "50px" padding-bottom: "10px"]]
+    [#ui/div board #container | style: [font-family: "sans-serif" padding: "10px"] children:
+        [#ui/div #status board class: "status" | style: [text-align: "center" width: "150px" height: "50px"]]
         [#ui/div board class: "board" | style: [color: "black"] children:
             [#ui/div board class: "row" sort: row, | children:
                 [#ui/div #cell-div cell class: "cell" sort: column text: contents |
