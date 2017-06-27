@@ -71,7 +71,8 @@ search
   else if cell = [#cell column player] N = gather/count[for: cell per: (column, player)] then (player, cell)
   else if cell = [#diagonal player] N = gather/count[for: cell per: player] then (player, cell)
   else if cell = [#anti-diagonal player] N = gather/count[for: cell per: player] then (player, cell)
-  else if N * N = gather/count[for: [#cell]] then ("nobody", "nothing") // Cat's game!
+  //else if N * N = gather/count[for: [#cell player]] then ("nobody", "nothing") // Cat's game!
+  else if not([#cell not(player)]) then ("nobody", "nothing")
 
 commit
   board.winner := winner
