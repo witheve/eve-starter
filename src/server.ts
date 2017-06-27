@@ -82,6 +82,7 @@ export class Server {
       prog.attach("compiler");
       prog.attach("file");
       prog.attach("console");
+      prog.attach("notify");
       prog.inputEAVs(results.results.eavs);
     `;
     res.send(mod);
