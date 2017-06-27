@@ -1,0 +1,65 @@
+# Notify Demo
+
+The notify watcher allows you to easily notify users of interesting or exceptional situations in your program.
+
+# Terms
+ - `#notify/root` is the container for all notifications.
+ - `#notify/notice` records created by your program representing a notification. They are `#ui/row` elements, and can utilize any attributes supported by `#html/element`s for styling and populating their content. The notify watcher includes styling for notices with a type attribute of `"warning"` or `"error"` by default, but feel free to add styling for the types you require.
+ - `#notify/dismissible` Attaching this to a `#notify/notice` will add a clear button to automatically clean up **committed** notifications. Note: it is impossible to automatically clean up bound notifications, so you'll need to wire up your own logic looking for `[#html/event/click element: [#notify/dismiss notice]]` for that.
+
+Hello, notice!
+
+```
+commit
+  [#notify/notice text: "Hello, world!"]
+```
+
+Notices can be grouped and styled by `type`.
+
+```
+commit
+  [#notify/notice type: "warning" text: "You're looking dangerously good today!"]
+```
+
+Committed notices may be marked `#notify/dismissible` to allow the user to get rid of them.
+
+```
+commit
+  [#notify/notice #notify/dismissible type: "error" text: "You shall not pass!"]
+```
+
+Bound notices might go away on their own when the exceptional situation ends.
+
+Bonus points: The pipe character `|` is used to separate the identifying attributes (left) from the non-identifying attributes (right). What would happen if we didn't use the pipe here and allowed the constantly-changing text to identify the notice?
+
+```
+search
+  [#time second]
+  math/mod[value: second by: 10] < 5
+
+bind
+  [#notify/notice #time-keeps-on-slipping type: "warning" |
+    text: "Uh oh, looks like `{{second}} % 10 < 5`!"]
+```
+
+
+
+Since notices are full elements, you can put whatever you like into them.
+
+```
+commit
+  [#notify/notice #some-problem | children:
+    [#ui/text text: "Something came up. "]
+    [#ui/button text: "kludge it"]
+    [#ui/button text: "fix it"]
+    [#ui/button text: "ignore it"]
+  ]
+
+```
+
+Add a timer named `#time` to support the bound notice above.
+
+```
+commit
+  [#system/timer #time resolution: 1000]
+```
