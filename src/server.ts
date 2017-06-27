@@ -80,6 +80,8 @@ export class Server {
       prog.attach("html");
       prog.attach("svg");
       prog.attach("compiler");
+      prog.attach("file");
+      prog.attach("console");
       prog.inputEAVs(results.results.eavs);
     `;
     res.send(mod);

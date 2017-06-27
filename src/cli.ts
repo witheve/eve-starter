@@ -123,6 +123,8 @@ if(opts["headless"]) {
         prog.attach("html");
         prog.attach("svg");
         prog.attach("compiler");
+        prog.attach("file");
+        prog.attach("console");
         prog.load(data);
       } else {
         console.error(err);
