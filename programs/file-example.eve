@@ -1,5 +1,7 @@
 # File watcher examples
 
+Note: Since the file system is unavailable in the browser, this program will only run in headless mode.
+
 Write a file
 
 ~~~
