@@ -1,16 +1,45 @@
 # File watcher examples
 
-Read the contents of a file
+Write a file
 
 ~~~
 commit
-  [#file/write path: "../foo2.txt" encoding: "utf-8" contents: "write a file hooray!"]
+  [#file/write #my-w-file path: "test.txt" contents: "These are the file contents"]
 ~~~
+
+When the file is finished writing, read it back again
 
 ~~~
 search
-  [#my-file contents]
+  [#my-w-file #file/complete]
+  
+commit
+  [#file/read #my-r-file path: "test.txt"]
+~~~
+
+Print the contents of the file
+
+~~~
+search
+  [#my-r-file contents]
 
 commit
-  [#console/log  text: contents]
+  [#console/log text: contents]
+~~~
+
+Try to read a file that isn't there
+
+~~~
+commit
+  [#file/read #missing-file path: "missing-file.txt"]
+~~~
+
+React to the error
+
+~~~
+search
+  file = [#missing-file error: [code: "ENOENT"]]
+
+commit
+  [#console/error text: "Oh no it wasn't there! {{file.path}}"]
 ~~~
