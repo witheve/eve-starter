@@ -8,8 +8,7 @@ import config from "./config";
 
 import {findWatchers, findPrograms, posixify} from "./util";
 import {Server} from "./server";
-
-
+import {Program} from "witheve";
 
 //------------------------------------------------------------------------------
 // CLI Setup
@@ -96,16 +95,50 @@ if(opts["headless"]) {
     process.exit(1);
   }
 
+  let filepath = config.file!.replace("file", config.workspacePaths["file"]);
+
+  if(!fs.existsSync(filepath)) {
+    console.error(`\nERROR: File "${filepath}" was not found.`);
+    process.exit(1);
+  }
+
   console.info(`Starting headless Eve instance...`);
-  console.info("  Requiring watchers from include paths...");
+  console.info("  Requiring watchers from include paths");
 
   for(let watcherFile of findWatchers(config.watcherPaths)) {
     require(watcherFile);
   }
 
-  console.info("  Starting program...");
+  console.info(`  Starting program '${path.relative(process.cwd(), filepath)}'\n`);
 
-  require(config.file!.replace("file", config.workspacePaths["file"]));
+  let extension = filepath.split('.').pop();
+  if(extension === "eve") {
+    fs.readFile(filepath, {encoding: 'utf-8'}, function(err,data){
+      if (!err) {
+        let prog = new Program(`${config.file}`);
+        prog.attach("system");
+        prog.attach("canvas");
+        prog.attach("ui");
+        prog.attach("html");
+        prog.attach("svg");
+        prog.attach("compiler");
+        prog.attach("file");
+        prog.attach("console");
+        prog.load(data);
+      } else {
+        console.error(err);
+        process.exit(1);
+      }
+    });
+  } else if(extension === "ts") {
+    console.info("You must compile the supplied file to js and run that.");
+    process.exit(1);
+  } else if(extension === "js") {
+    require(filepath);
+  } else {
+    console.error(`\nERROR: *.${extension} files are unsupported. Supported types are *.js and *.eve`);
+    process.exit(1);
+  }
 
 } else {
   let server = new Server();

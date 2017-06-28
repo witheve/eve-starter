@@ -1,0 +1,57 @@
+# File watcher examples
+
+Note: Since the file system is unavailable in the browser, this program will only run in headless mode.
+
+Notify users trying to run this demo in the browser how to use it.
+
+~~~
+commit
+  [#ui/column style: [flex: 1 justify-content: "center"] children:
+	[#ui/div style: [align-self: "center" width: "400px" padding: "20px" background: "white" border-radius: "3px"] children:
+	  [#ui/text text: "This example requires file system access, so cannot be run in the browser. You can run this program in a headless node instance with "]
+	  [#html/element tagname: "code" text: "npm start -- -H ./programs/file-demo.eve" style: [display: "inline-block"]]]]
+~~~
+
+Write a file
+
+~~~
+commit
+  [#file/write #my-w-file path: "test.txt" contents: "These are the file contents"]
+~~~
+
+When the file is finished writing, read it back again
+
+~~~
+search
+  [#my-w-file #file/complete]
+
+commit
+  [#file/read #my-r-file path: "test.txt"]
+~~~
+
+Print the contents of the file
+
+~~~
+search
+  [#my-r-file contents]
+
+commit
+  [#console/log text: contents]
+~~~
+
+Try to read a file that isn't there
+
+~~~
+commit
+  [#file/read #missing-file path: "missing-file.txt"]
+~~~
+
+React to the error
+
+~~~
+search
+  file = [#missing-file error: [code: "ENOENT"]]
+
+commit
+  [#console/error text: "Oh no it wasn't there! {{file.path}}"]
+~~~
