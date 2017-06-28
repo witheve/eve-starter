@@ -93,27 +93,26 @@ if(opts["headless"]) {
     program.outputHelp();
     console.error("\nERROR: Unable to run Eve headless unless you specify a program to run with `<file>`");
     process.exit(1);
-  } 
-  
+  }
+
   let filepath = config.file!.replace("file", config.workspacePaths["file"]);
 
   if(!fs.existsSync(filepath)) {
     console.error(`\nERROR: File "${filepath}" was not found.`);
     process.exit(1);
   }
-  
+
   console.info(`Starting headless Eve instance...`);
-  console.info("  Requiring watchers from include paths...");
+  console.info("  Requiring watchers from include paths");
 
   for(let watcherFile of findWatchers(config.watcherPaths)) {
     require(watcherFile);
   }
 
-  console.info(`  Starting program ${filepath}...`);
+  console.info(`  Starting program '${path.relative(process.cwd(), filepath)}'\n`);
 
   let extension = filepath.split('.').pop();
   if(extension === "eve") {
-    console.info("running an eve file");
     fs.readFile(filepath, {encoding: 'utf-8'}, function(err,data){
       if (!err) {
         let prog = new Program(`${config.file}`);
@@ -123,6 +122,8 @@ if(opts["headless"]) {
         prog.attach("html");
         prog.attach("svg");
         prog.attach("compiler");
+        prog.attach("file");
+        prog.attach("console");
         prog.load(data);
       } else {
         console.error(err);
