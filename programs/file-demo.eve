@@ -9,7 +9,7 @@ commit
   [#ui/column style: [flex: 1 justify-content: "center"] children:
 	[#ui/div style: [align-self: "center" width: "400px" padding: "20px" background: "white" border-radius: "3px"] children:
 	  [#ui/text text: "This example requires file system access, so cannot be run in the browser. You can run this program in a headless node instance with "]
-	  [#html/element tagname: "code" text: "npm start -- -H ./programs/file-example.eve" style: [display: "inline-block"]]]]
+	  [#html/element tagname: "code" text: "npm start -- -H ./programs/file-demo.eve" style: [display: "inline-block"]]]]
 ~~~
 
 Write a file
