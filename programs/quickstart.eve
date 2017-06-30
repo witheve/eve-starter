@@ -1,0 +1,16 @@
+This will be where you write your web app for the quickstart!
+
+As you add blocks of code from the quickstart guide, remember to include code fences (```)! Eve programs are written as comments with bits of code embedded inside it, so none of this prose here will be run as Eve code. They're just for you to read.
+
+Eve code looks like this:
+
+
+```
+  // Only things in between the code fences are counted as code, and everything between a set of code fences is one block.
+```
+
+~~~
+  // Tildes can be used for code fences too :)
+~~~
+
+Add your first block below:
