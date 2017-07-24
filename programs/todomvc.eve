@@ -100,7 +100,7 @@ bind
             [#ui/input #todo-checkbox todo, type: "checkbox", checked: completed, class: "toggle" class: [hidden: editing]]
             [#html/element tagname: "label" #todo-item, class: [hidden: editing], todo, text: body]
             [#ui/input #todo-editor todo, value: body, autofocus: "true", class: "edit" class: [hidden: logic/toggle[value: editing]]]
-            [#ui/button #remove-todo todo, class: "destroy" class: [hidden: editing]]]
+            [#ui/button #remove-todo todo, class: "flat destroy" class: [hidden: editing]]]
 ~~~
 
 Thanks to Eve's set semantics, we don't need any loops here; for every unique `#todo` in the database, Eve will do the work of adding another `#li` as a child of `#todo-list`.
