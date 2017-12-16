@@ -36,7 +36,7 @@ npm install
 
 ## Using the Starter
 
-If you want to explore the bundled examples you can start the program switcher, which allows you to explore them from your browser. Any `*.eve` files places into the `eve-starter/programs` directory will be shown here.
+If you want to explore the bundled examples you can start the program switcher, which allows you to explore them from your browser. Any `*.eve` files placed into the `eve-starter/programs` directory will be shown here.
 
 ```sh
 npm start
